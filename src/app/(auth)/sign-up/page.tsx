@@ -1,12 +1,9 @@
-
-
-
 "use client";
 
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-
+import { redirect } from "next/navigation"; 
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -25,17 +22,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import Link from "next/link";
-
-const formSchema = z.object({
-  name: z.string().min(4).max(50),
-
-  email: z
-    .string()
-    .email({ message: "please enter valid email" })
-    .min(2)
-    .max(50),
-  password: z.string().min(4).max(50),
-});
+import { formSchema } from "@/lib/auth-schema";
+import { authClient } from "@/lib/auth-client";
+import { toast } from "@/hooks/use-toast";
 
 export default function Signin() {
   // 1. Define your form.
@@ -48,10 +37,32 @@ export default function Signin() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-  }
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    const {name, email, password } = values;
+    const { data, error } = await authClient.signUp.email(
+      { name,
+        email,
+        password,
+        callbackURL: "/sign-in",
+      },
+      {
+        onRequest: () => {
+          toast({
+            title: "Please wait...",
+          });
+        },
+        onSuccess: () => {
+         redirect( "/sign-in")
+        },
 
+        onError: (ctx) => {
+          toast({
+            title: ctx.error.message,
+          });
+        },
+      }
+    );
+  }
   return (
     <>
       <Card className="max-w-md mx-auto my-28  ">

@@ -22,33 +22,50 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import Link from "next/link";
-
-const formSchema = z.object({
-  email: z
-    .string()
-    .email({ message: "please enter valid email" })
-    .min(2)
-    .max(50),
-  password: z.string().min(4).max(50),
-});
+import { formSchemaSignin } from "@/lib/auth-schema";
+import { GitHubSignIn } from "@/components/auth/GitHubSignIn";
+import { authClient } from "@/lib/auth-client";
+import { toast } from "@/hooks/use-toast";
 
 export default function Signup() {
   // 1. Define your form.
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof formSchemaSignin>>({
+    resolver: zodResolver(formSchemaSignin),
     defaultValues: {
       email: "",
       password: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof formSchemaSignin>) {
+    const { email, password } = values;
+    const { data, error } = await authClient.signIn.email(
+      {
+        email,
+        password,
+        callbackURL: "/dashboard",
+      },
+      {
+        onRequest: () => {
+          toast({
+            title: "Please wait...",
+          });
+        },
+        onSuccess: () => {
+          form.reset();
+        },
+
+        onError: (ctx) => {
+          toast({
+            title: ctx.error.message,
+          });
+        },
+      }
+    );
   }
 
   return (
     <>
-
       <Card className="max-w-md mx-auto my-28  ">
         <CardHeader>
           <CardTitle className="font-bold text-3xl">Sign in</CardTitle>
@@ -65,7 +82,7 @@ export default function Signup() {
                     <FormControl>
                       <Input placeholder="foshatia@gmail.com" {...field} />
                     </FormControl>
-                
+
                     <FormMessage />
                   </FormItem>
                 )}
@@ -79,23 +96,30 @@ export default function Signup() {
                     <FormControl>
                       <Input type="password" placeholder="*****" {...field} />
                     </FormControl>
-                 
+
                     <FormMessage />
                   </FormItem>
                 )}
               />
 
-              <Button className="w-full" type="submit">Log in</Button>
+              <Button className="w-full" type="submit">
+                Log in
+              </Button>
             </form>
           </Form>
+          <div className="mt-2">
+            <GitHubSignIn />
+          </div>
         </CardContent>
         <CardFooter>
-          <p>Don&apos;t have an account yet?<Link className="font-bold ml-2" href="sign-up">Sign up</Link>  </p>
+          <p>
+            Don&apos;t have an account yet?
+            <Link className="font-bold ml-2" href="sign-up">
+              Sign up
+            </Link>
+          </p>
         </CardFooter>
       </Card>
     </>
   );
 }
-
-
-
