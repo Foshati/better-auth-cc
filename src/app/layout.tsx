@@ -2,6 +2,14 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "@/components/layout/navbar";
 import { Toaster } from "@/components/ui/toaster";
+import { Lexend } from "next/font/google";
+
+const lexend = Lexend({
+  weight: ["400", "700"],
+  subsets: ["latin"],
+  display: "swap",
+  style: "normal",
+});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -14,12 +22,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={lexend.className}>
       <body>
-        <Navbar/>
-        <main> {children}
-        <Toaster />
-
+        <Navbar />
+        <main>
+          {children}
+          <Toaster />
         </main>
       </body>
     </html>

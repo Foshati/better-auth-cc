@@ -26,6 +26,7 @@ import { formSchemaSignin } from "@/lib/auth-schema";
 import { GitHubSignIn } from "@/components/auth/GitHubSignIn";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "@/hooks/use-toast";
+import Button43 from "@/components/auth/socialsButtonts";
 
 export default function Signup() {
   // 1. Define your form.
@@ -108,7 +109,7 @@ export default function Signup() {
             </form>
           </Form>
           <div className="mt-2">
-            <GitHubSignIn />
+            <Button43 />{" "}
           </div>
         </CardContent>
         <CardFooter>
