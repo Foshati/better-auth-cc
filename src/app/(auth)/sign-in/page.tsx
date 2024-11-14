@@ -109,7 +109,7 @@ export default function Signup() {
             </form>
           </Form>
           <div className="mt-2">
-            <Button43 />{" "}
+            <Button43 />
           </div>
         </CardContent>
         <CardFooter>
