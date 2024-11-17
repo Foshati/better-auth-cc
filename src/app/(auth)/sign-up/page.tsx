@@ -3,17 +3,15 @@
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { redirect } from "next/navigation"; 
+import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Form,
-  FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import {
   Card,
   CardContent,
@@ -25,6 +23,8 @@ import Link from "next/link";
 import { formSchema } from "@/lib/auth-schema";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "@/hooks/use-toast";
+import InputSchema from "@/components/inputSchema"; // InputSchema import
+import { Input } from "@/components/ui/input";
 
 export default function Signin() {
   // 1. Define your form.
@@ -38,13 +38,9 @@ export default function Signin() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const {name, email, password } = values;
+    const { name, email, password } = values;
     const { data, error } = await authClient.signUp.email(
-      { name,
-        email,
-        password,
-        callbackURL: "/sign-in",
-      },
+      { name, email, password, callbackURL: "/sign-in" },
       {
         onRequest: () => {
           toast({
@@ -52,7 +48,7 @@ export default function Signin() {
           });
         },
         onSuccess: () => {
-         redirect( "/sign-in")
+          redirect("/sign-in");
         },
 
         onError: (ctx) => {
@@ -63,9 +59,10 @@ export default function Signin() {
       }
     );
   }
+
   return (
     <>
-      <Card className="max-w-md mx-auto my-28  ">
+      <Card className="max-w-md mx-auto my-28">
         <CardHeader>
           <CardTitle className="font-bold text-3xl">Sign up</CardTitle>
         </CardHeader>
@@ -77,11 +74,8 @@ export default function Signin() {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="sam foshati" {...field} />
-                    </FormControl>
-
+                    <FormLabel>Name</FormLabel>
+                    <Input placeholder="Sam Foshati" {...field} />
                     <FormMessage />
                   </FormItem>
                 )}
@@ -92,11 +86,8 @@ export default function Signin() {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>email</FormLabel>
-                    <FormControl>
-                      <Input placeholder="foshatia@gmail.com " {...field} />
-                    </FormControl>
-
+                    <FormLabel>Email</FormLabel>
+                    <Input placeholder="foshatia@gmail.com" {...field} />
                     <FormMessage />
                   </FormItem>
                 )}
@@ -107,18 +98,15 @@ export default function Signin() {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>password</FormLabel>
-                    <FormControl>
-                      <Input type="password" placeholder="****" {...field} />
-                    </FormControl>
-
+                    <FormLabel>Password</FormLabel>
+                    <InputSchema {...field} />
                     <FormMessage />
                   </FormItem>
                 )}
               />
 
               <Button className="w-full" type="submit">
-                sign up
+                Sign up
               </Button>
             </form>
           </Form>
@@ -126,7 +114,7 @@ export default function Signin() {
         <CardFooter>
           <p>
             Already have an account?
-            <Link className="font-bold ml-2" href="sign-in">
+            <Link className="font-bold ml-2" href="/sign-in">
               Sign in
             </Link>
           </p>

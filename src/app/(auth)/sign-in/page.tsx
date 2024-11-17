@@ -13,7 +13,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import {
   Card,
   CardContent,
@@ -27,8 +26,11 @@ import { authClient } from "@/lib/auth-client";
 import { toast } from "@/hooks/use-toast";
 import Button43 from "@/components/auth/socialsButtonts";
 
+// وارد کردن کامپوننت InputHide
+import { Input } from "@/components/ui/input";
+import InputHide from "@/components/inputHide";
+
 export default function Signup() {
-  // 1. Define your form.
   const form = useForm<z.infer<typeof formSchemaSignin>>({
     resolver: zodResolver(formSchemaSignin),
     defaultValues: {
@@ -54,7 +56,6 @@ export default function Signup() {
         onSuccess: () => {
           form.reset();
         },
-
         onError: (ctx) => {
           toast({
             title: ctx.error.message,
@@ -66,7 +67,7 @@ export default function Signup() {
 
   return (
     <>
-      <Card className="max-w-md mx-auto my-28  ">
+      <Card className="max-w-md mx-auto my-28">
         <CardHeader>
           <CardTitle className="font-bold text-3xl">Sign in</CardTitle>
         </CardHeader>
@@ -82,7 +83,6 @@ export default function Signup() {
                     <FormControl>
                       <Input placeholder="foshatia@gmail.com" {...field} />
                     </FormControl>
-
                     <FormMessage />
                   </FormItem>
                 )}
@@ -92,29 +92,21 @@ export default function Signup() {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <div className="flex  items-center justify-between max-w-2xl">
+                    <div className="flex items-center justify-between max-w-2xl">
                       <FormLabel>Password</FormLabel>
-
                       <span>
-                        <Link
-                          className="text-xs font-thin"
-                          href="/forgot-password"
-                        >
-                          {" "}
-                          forget password
+                        <Link className="text-xs font-thin" href="/forgot-password">
+                          Forgot password?
                         </Link>
                       </span>
                     </div>
-
                     <FormControl>
-                      <Input type="password" placeholder="*****" {...field} />
+                      <InputHide field={field} />
                     </FormControl>
-
                     <FormMessage />
                   </FormItem>
                 )}
               />
-
               <Button className="w-full" type="submit">
                 Log in
               </Button>
