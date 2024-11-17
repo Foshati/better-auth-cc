@@ -1,26 +1,34 @@
 import { z } from "zod";
 
 export const formSchema = z.object({
-  name: z
-    .string()
-    .min(3, { message: "The name must be more than three letters " })
-    .max(20, { message: "The name can be a maximum of 20 letters" }),
-
-  email: z
-    .string()
-    .email({ message: "please enter a valid email" })
-    .min(3, { message: "The email must be more than three letters " })
-    .max(20, { message: "The email can be a maximum of 20 letters" }),
-
-  password: z
-    .string()
-    .min(8, { message: "The password must be more than eight letters " })
-    .max(50, { message: "The password can be a maximum of 50 letters" }),
+  name: z.string().min(2, {
+    message: "Name must be at least 2 characters.",
+  }),
+  email: z.string().email({
+    message: "Please enter a valid email address.",
+  }),
+  password: z.string().min(8, {
+    message: "Password must be at least 8 characters.",
+  }),
 });
 
+export const formSchemaSignin = z.object({
+  email: z.string().email({
+    message: "Please enter a valid email address.",
+  }),
+  password: z.string().min(8, {
+    message: "Password must be at least 8 characters.",
+  }),
+});
 
+export const resetPasswordSchema = z.object({
+  password: z.string().min(8, {
+    message: "Password must be at least 8 characters.",
+  }),
+});
 
-export const formSchemaSignin=formSchema.pick({
-    email:true,
-    password:true
-})
+export const forgotPasswordSchema = z.object({
+  email: z.string().email({
+    message: "Please enter a valid email address.",
+  }),
+});

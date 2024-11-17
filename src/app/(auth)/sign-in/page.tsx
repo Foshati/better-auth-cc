@@ -23,7 +23,6 @@ import {
 } from "@/components/ui/card";
 import Link from "next/link";
 import { formSchemaSignin } from "@/lib/auth-schema";
-import { GitHubSignIn } from "@/components/auth/GitHubSignIn";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "@/hooks/use-toast";
 import Button43 from "@/components/auth/socialsButtonts";
@@ -93,7 +92,20 @@ export default function Signup() {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Password</FormLabel>
+                    <div className="flex  items-center justify-between max-w-2xl">
+                      <FormLabel>Password</FormLabel>
+
+                      <span>
+                        <Link
+                          className="text-xs font-thin"
+                          href="/forgot-password"
+                        >
+                          {" "}
+                          forget password
+                        </Link>
+                      </span>
+                    </div>
+
                     <FormControl>
                       <Input type="password" placeholder="*****" {...field} />
                     </FormControl>
