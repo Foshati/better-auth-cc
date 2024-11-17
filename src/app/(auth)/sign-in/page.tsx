@@ -95,10 +95,7 @@ export default function Signup() {
                     <div className="flex items-center justify-between max-w-2xl">
                       <FormLabel>Password</FormLabel>
                       <span>
-                        <Link
-                          className="text-[10px] font-thin text-slate-900 hover:text-yellow-500"
-                          href="/forgot-password"
-                        >
+                        <Link className="text-[10px] font-thin text-slate-900 hover:text-yellow-500" href="/forgot-password">
                           Forgot password
                         </Link>
                       </span>
@@ -117,11 +114,14 @@ export default function Signup() {
           </Form>
 
           <div className="flex items-center justify-center my-6">
-            <hr className="border-t-2 border-gray-300 flex-1" />
-            <span className="mx-4 text-gray-600 text-[10px]">or</span>
-            <hr className="border-t-2 border-gray-300 flex-1" />
-          </div>
+  <hr className="border-t-2 border-gray-300 flex-1" />
+  <span className="mx-4 text-gray-600 text-[10px]">or</span>
+  <hr className="border-t-2 border-gray-300 flex-1" />
+</div>
 
+
+
+         
           <div className="mt-2">
             <SocialButtons />
           </div>
@@ -131,8 +131,8 @@ export default function Signup() {
             Don&apos;t have an account yet?
           </p>
           <Link className="text-sm font-bold  ml-2" href="sign-up">
-            Sign up
-          </Link>
+              Sign up
+            </Link>
         </CardFooter>
       </Card>
     </>

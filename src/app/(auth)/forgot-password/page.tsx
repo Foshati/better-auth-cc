@@ -1,9 +1,10 @@
+// src/app/(auth)/forgot-password/page.tsx
 "use client";
 
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -13,54 +14,64 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
-  CardDescription,
 } from "@/components/ui/card";
-import { authClient } from "@/lib/auth-client";
+import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
-import { forgotPasswordSchema } from "@/lib/auth-schema";
+
+const formSchema = z.object({
+  email: z.string().email("Please enter a valid email"),
+});
 
 export default function ForgotPassword() {
-  const form = useForm<z.infer<typeof forgotPasswordSchema>>({
-    resolver: zodResolver(forgotPasswordSchema),
-    defaultValues: {
-      email: "",
-    },
+  const [isLoading, setIsLoading] = useState(false);
+  
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: { email: "" },
   });
 
-  async function onSubmit(values: z.infer<typeof forgotPasswordSchema>) {
-    const { data, error } = await authClient.forgetPassword({
-      email: values.email,
-      redirectTo: "/reset-password",
-    });
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      setIsLoading(true);
+      
+      const response = await fetch("/api/auth/forget-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values),
+      });
 
-    if (error) {
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error);
+      }
+
       toast({
-        title: error.message,
+        title: "Success",
+        description: "Password reset email sent. Please check your inbox.",
+      });
+      
+      form.reset();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to send reset email",
         variant: "destructive",
       });
-      return;
+    } finally {
+      setIsLoading(false);
     }
-
-    toast({
-      title: "Reset password link sent to your email",
-    });
-    form.reset();
   }
 
   return (
     <Card className="max-w-md mx-auto my-28">
       <CardHeader>
-        <CardTitle className="font-bold text-3xl">Forgot Password</CardTitle>
-        <CardDescription>
-          Enter your email address and we&apos;ll send you a link to reset your
-          password.
-        </CardDescription>
+        <CardTitle className="font-bold text-3xl">Reset Password</CardTitle>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -72,14 +83,23 @@ export default function ForgotPassword() {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="you@example.com" {...field} />
+                    <Input
+                      placeholder="example@gmail.com"
+                      type="email"
+                      disabled={isLoading}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button className="w-full" type="submit">
-              Send Reset Link
+            <Button 
+              className="w-full" 
+              type="submit"
+              disabled={isLoading}
+            >
+              {isLoading ? "Sending..." : "Send Reset Link"}
             </Button>
           </form>
         </Form>
