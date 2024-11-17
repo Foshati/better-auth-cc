@@ -112,12 +112,12 @@ export default function Signin() {
           </Form>
         </CardContent>
         <CardFooter>
-          <p>
+          <p className="text-xs font-medium text-slate-700">
             Already have an account?
-            <Link className="font-bold ml-2" href="/sign-in">
-              Sign in
-            </Link>
           </p>
+          <Link className="text-sm font-bold ml-2" href="/sign-in">
+            Sign in
+          </Link>
         </CardFooter>
       </Card>
     </>

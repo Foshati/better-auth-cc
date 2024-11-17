@@ -24,11 +24,11 @@ import Link from "next/link";
 import { formSchemaSignin } from "@/lib/auth-schema";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "@/hooks/use-toast";
-import Button43 from "@/components/auth/socialsButtonts";
 
 // وارد کردن کامپوننت InputHide
 import { Input } from "@/components/ui/input";
 import InputHide from "@/components/inputHide";
+import SocialButtons from "@/components/auth/socialsButtonts";
 
 export default function Signup() {
   const form = useForm<z.infer<typeof formSchemaSignin>>({
@@ -95,8 +95,11 @@ export default function Signup() {
                     <div className="flex items-center justify-between max-w-2xl">
                       <FormLabel>Password</FormLabel>
                       <span>
-                        <Link className="text-xs font-thin" href="/forgot-password">
-                          Forgot password?
+                        <Link
+                          className="text-[10px] font-thin text-slate-900 hover:text-yellow-500"
+                          href="/forgot-password"
+                        >
+                          Forgot password
                         </Link>
                       </span>
                     </div>
@@ -112,17 +115,24 @@ export default function Signup() {
               </Button>
             </form>
           </Form>
+
+          <div className="flex items-center justify-center my-6">
+            <hr className="border-t-2 border-gray-300 flex-1" />
+            <span className="mx-4 text-gray-600 text-[10px]">or</span>
+            <hr className="border-t-2 border-gray-300 flex-1" />
+          </div>
+
           <div className="mt-2">
-            <Button43 />
+            <SocialButtons />
           </div>
         </CardContent>
         <CardFooter>
-          <p>
+          <p className="text-xs font-medium text-slate-700">
             Don&apos;t have an account yet?
-            <Link className="font-bold ml-2" href="sign-up">
-              Sign up
-            </Link>
           </p>
+          <Link className="text-sm font-bold  ml-2" href="sign-up">
+            Sign up
+          </Link>
         </CardFooter>
       </Card>
     </>
