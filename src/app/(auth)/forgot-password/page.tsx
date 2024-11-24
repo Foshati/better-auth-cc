@@ -81,7 +81,7 @@ export default function ForgotPassword() {
   return (
     <Card className="max-w-md mx-auto my-28">
       <CardHeader>
-        <CardTitle className="font-bold text-3xl">Forgot Password?</CardTitle>
+        <CardTitle className="font-bold text-3xl">Forgot Password</CardTitle>
         <CardDescription>
           Enter your email address and we&apos;ll send you instructions to reset your password.
         </CardDescription>

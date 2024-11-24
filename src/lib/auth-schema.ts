@@ -1,7 +1,6 @@
 import { z } from "zod";
 
-// اعتبارسنجی استحکام پسورد
-const passwordValidation = z
+export const passwordValidation = z
   .string()
   .min(8, { message: "Password must be at least 8 characters." })
   .regex(/[A-Z]/, { message: "Password must contain at least one uppercase letter." })
