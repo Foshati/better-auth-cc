@@ -15,7 +15,6 @@
 
 ## Getting Started
 
-First, run the development server:
 
 ```bash
 npm install
@@ -30,7 +29,6 @@ bun install
 
 ## Start project
 
-First, run the development server:
 
 ```bash
 npm run dev
