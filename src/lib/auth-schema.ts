@@ -29,13 +29,23 @@ export const formSchemaSignin = z.object({
   password: passwordValidation,
 });
 
-export const resetPasswordSchema = z.object({
-  password: passwordValidation,
-});
+
+
 
 export const forgotPasswordSchema = z.object({
-  email: z
+  email: z.string().email("Invalid email address"),
+});
+
+export const resetPasswordSchema = z.object({
+  password: z
     .string()
-    .email({ message: "Please enter a valid email address." })
-    .max(100, { message: "Email must be at most 100 characters." }),
+    .min(8, "Password must be at least 8 characters")
+    .regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
+      "Password must contain uppercase, lowercase and numbers"
+    ),
+  confirmPassword: z.string(),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
 });
