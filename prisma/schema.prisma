@@ -1,3 +1,9 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,18 +14,15 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(uuid())
+  id            String    @id
   email         String    @unique
   name          String?
   emailVerified Boolean
   image         String?
-  role          Role      @default(USER)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  createdAt     DateTime
+  updatedAt     DateTime
   Session       Session[]
   Account       Account[]
-  posts         Post[]    
-  comments      Comment[]
 
   @@map("user")
 }
@@ -50,49 +53,11 @@ model Account {
   @@map("account")
 }
 
-
 model Verification {
-  id         String   @id @default(uuid())
+  id         String   @id
   identifier String
   value      String
   expiresAt  DateTime
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
 
   @@map("verification")
-}
-
-// New models for blog system
-model Post {
-  id        String    @id @default(uuid())
-  title     String
-  content   String    @db.Text
-  published Boolean   @default(false)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  author    User      @relation(fields: [authorId], references: [id])
-  authorId  String
-  comments  Comment[]
-  slug      String    @unique
-  image     String?
-
-  @@map("post")
-}
-
-model Comment {
-  id        String   @id @default(uuid())
-  content   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  author    User     @relation(fields: [authorId], references: [id])
-  authorId  String
-  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
-  postId    String
-
-  @@map("comment")
-}
-
-enum Role {
-  USER
-  ADMIN
 }
