@@ -20,11 +20,24 @@ const getPasswordSchema = (type: "password" | "confirmPassword") =>
     .min(8, `${type} must be atleast 8 characters`)
     .max(32, `${type} can not exceed 32 characters`);
 
-const getUserNameSchema =()=>
-  string({ required_error: "Username is required" })
-    .min(3, "Username must be atleast 3 characters")
-    .max(32, "Username can not exceed 32 characters")
-    .regex(/^[a-zA-Z0-9]+$/, "Username can only contain letters and numbers")
+
+
+
+    const getUserNameSchema = () =>
+      string()
+        .min(4, { message: "Username must be at least 3 characters" })
+        .max(20, { message: "Username must be at most 20 characters" })
+        .regex(/^(?![_\.])[a-z0-9_]+(?<![_\.])$/, {
+          message:
+            "Username must be 4-20 characters, can only contain lowercase letters, numbers, and underscores, and cannot start or end with underscores or dots.",
+        })
+        .refine((username) => !["admin", "root", "superuser"].includes(username), {
+          message: "This username is reserved and cannot be used.",
+        });
+    
+
+
+
 
 
 const getEmailSchema = () =>
