@@ -1,41 +1,32 @@
-import Link from "next/link"
-import { Button, buttonVariants } from "./ui/button"
-import { auth } from "@/lib/auth";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import { headers } from "next/headers";
-import { redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
+import SignoutButton from "./auth/signout-button";
 
 export default async function Navbar() {
   const session = await auth.api.getSession({
-    headers: await headers()
+    headers: await headers(),
   });
-
   return (
-    <div className="border-b px-4">
-      <div className="flex items-center justify-between mx-auto max-w-4xl h-16">
-        <Link href='/' className="flex items-center gap-2">
-          <span className="font-bold text-lg">Betterauth</span>
-        </Link>
-
-        <div>
-          {
-            session ? (
-              <form action={async () => {
-                'use server'
-                await auth.api.signOut({
-                  headers: await headers()
-                });
-                redirect('/')
-              }}>
-                <Button type='submit'>Sign Out</Button>
-              </form>
-            ) :
-              <Link href='/sign-in' className={buttonVariants()}>
-                Sign In
-              </Link>
-          }
+    <nav className="flex justify-between items-center py-3 px-4 fixed top-0 left-0 right-0 z-50 bg-slate-100">
+      <Link href="/" className="text-xl font-bold">
+        better-auth
+      </Link>
+      {!session ? (
+        <div className="flex gap-2 justify-center">
+          <Link href="/sign-in">
+            <Button variant="default">Sign In</Button>
+          </Link>
+          <Link href="/sign-up">
+            <Button variant="default">Sign Up</Button>
+          </Link>
         </div>
-      </div>
-
-    </div>
-  )
+      ) : (
+        <div className="flex items-center gap-2">
+          <SignoutButton />
+        </div>
+      )}
+    </nav>
+  );
 }

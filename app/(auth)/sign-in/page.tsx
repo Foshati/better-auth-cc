@@ -4,7 +4,6 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
-import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -21,59 +20,71 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import Link from "next/link";
-import { formSchemaSignin } from "@/lib/auth-schema";
 import { authClient } from "@/lib/auth-client";
-import { toast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
 import InputHide from "@/components/inputHide";
 import SocialButtons from "@/components/auth/socialsButtonts";
+import { signInSchema } from "@/lib/auth-schema";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
+import { ErrorContext } from "@better-fetch/fetch";
+import LoadingButton from "@/components/loading-button";
 
+export default function SignIn() {
+  const router = useRouter();
+  const { toast } = useToast();
+  const [pendingCredentials, setPendingCredentials] = useState(false);
 
-
-export default function Signup() {
-  const form = useForm<z.infer<typeof formSchemaSignin>>({
-    resolver: zodResolver(formSchemaSignin),
+  const form = useForm<z.infer<typeof signInSchema>>({
+    resolver: zodResolver(signInSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchemaSignin>) {
-    const { email, password } = values;
-    const { data :_data, error :_error } = await authClient.signIn.email(
+  const handleCredentialsSignIn = async (
+    values: z.infer<typeof signInSchema>
+  ) => {
+    await authClient.signIn.email(
       {
-        email,
-        password,
-        callbackURL: "/dashboard",
+        email: values.email,
+        password: values.password,
       },
       {
         onRequest: () => {
-          toast({
-            title: "Please wait...",
-          });
+          setPendingCredentials(true);
         },
-        onSuccess: () => {
-          form.reset();
+        onSuccess: async () => {
+          router.push("/");
+          router.refresh();
         },
-        onError: (ctx) => {
+        onError: (ctx: ErrorContext) => {
+          console.log(ctx);
           toast({
-            title: ctx.error.message,
+            title: "Something went wrong",
+            description: ctx.error.message ?? "Something went wrong.",
+            variant: "destructive",
           });
         },
       }
     );
-  }
+    setPendingCredentials(false);
+  };
 
   return (
     <>
-<Card className="w-full max-w-xs sm:max-w-sm lg:max-w-lg mx-auto my-28">
-<CardHeader>
+      <Card className="w-full max-w-xs sm:max-w-sm lg:max-w-lg mx-auto my-28">
+        <CardHeader>
           <CardTitle className="font-bold text-3xl">Sign in</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form
+              onSubmit={form.handleSubmit(handleCredentialsSignIn)}
+              className="space-y-6"
+            >
               <FormField
                 control={form.control}
                 name="email"
@@ -110,9 +121,9 @@ export default function Signup() {
                   </FormItem>
                 )}
               />
-              <Button className="w-full" type="submit">
-                Log in
-              </Button>
+              <LoadingButton pending={pendingCredentials}>
+                Sign in
+              </LoadingButton>
             </form>
           </Form>
 

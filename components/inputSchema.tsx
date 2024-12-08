@@ -1,6 +1,5 @@
-
 import { Check, Eye, EyeOff, X } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useRef } from "react";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 
@@ -21,6 +20,8 @@ export default function InputSchema({
 }: InputSchemaProps) {
   const [password, setPassword] = useState(value);
   const [isVisible, setIsVisible] = useState<boolean>(false);
+  const [isFocused, setIsFocused] = useState<boolean>(false);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const toggleVisibility = () => setIsVisible((prevState) => !prevState);
 
@@ -75,9 +76,19 @@ export default function InputSchema({
               setPassword(e.target.value);
               onChange(e); // Notify react-hook-form
             }}
-            onBlur={onBlur}
+            onBlur={(e) => {
+              onBlur();
+              setIsFocused(false);
+            }}
+            onFocus={() => setIsFocused(true)}
             name={name} // Bind the name attribute for react-hook-form
-            ref={ref} // Required for react-hook-form
+            ref={(r) => {
+              if (ref) {
+                // @ts-ignore
+                ref.current = r;
+              }
+              inputRef.current = r;
+            }}
             aria-invalid={strengthScore < 4}
             aria-describedby="password-strength"
           />
@@ -98,44 +109,78 @@ export default function InputSchema({
         </div>
       </div>
 
-      {/* Password strength indicator */}
-      <div
-        className="mb-4 mt-3 h-1 w-full overflow-hidden rounded-full bg-border"
-        role="progressbar"
-        aria-valuenow={strengthScore}
-        aria-valuemin={0}
-        aria-valuemax={4}
-        aria-label="Password strength"
+      {/* Password strength indicator and requirements */}
+      <div 
+        className={`
+          overflow-hidden transition-all duration-500 ease-out 
+          ${(isFocused || password) 
+            ? 'max-h-96 opacity-100 scale-100 visible' 
+            : 'max-h-0 opacity-0 scale-95 invisible'}
+        `}
+        style={{
+          transformOrigin: 'top center', // Ensure scaling happens from the top
+          transition: 'all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1)' // Smoother easing
+        }}
       >
+        {/* Strength Progress Bar */}
         <div
-          className={`h-full ${getStrengthColor(strengthScore)} transition-all duration-500 ease-out`}
-          style={{ width: `${(strengthScore / 4) * 100}%` }}
-        ></div>
-      </div>
+          className="mb-4 mt-3 h-1 w-full overflow-hidden rounded-full bg-border"
+          role="progressbar"
+          aria-valuenow={strengthScore}
+          aria-valuemin={0}
+          aria-valuemax={4}
+          aria-label="Password strength"
+        >
+          <div
+            className={`h-full ${getStrengthColor(strengthScore)} transition-all duration-500 ease-out`}
+            style={{ width: `${(strengthScore / 4) * 100}%` }}
+          ></div>
+        </div>
 
-      {/* Password strength description */}
-      <p id="password-strength" className="mb-2 text-sm font-medium text-foreground">
-        {getStrengthText(strengthScore)}. Must contain:
-      </p>
+        {/* Password strength description */}
+        <p 
+          id="password-strength" 
+          className="mb-2 text-sm font-medium text-foreground transform transition-all duration-500 ease-out"
+          style={{
+            transitionDelay: '0.1s', // Slight delay to create a staggered effect
+            opacity: (isFocused || password) ? 1 : 0,
+            transform: (isFocused || password) 
+              ? 'translateY(0)' 
+              : 'translateY(-10px)'
+          }}
+        >
+          {getStrengthText(strengthScore)}. Must contain:
+        </p>
 
-      {/* Password requirements list */}
-      <ul className="space-y-1.5" aria-label="Password requirements">
-        {strength.map((req, index) => (
-          <li key={index} className="flex items-center gap-2">
-            {req.met ? (
-              <Check size={16} className="text-emerald-500" aria-hidden="true" />
-            ) : (
-              <X size={16} className="text-muted-foreground/80" aria-hidden="true" />
-            )}
-            <span className={`text-xs ${req.met ? "text-emerald-600" : "text-muted-foreground"}`}>
-              {req.text}
-              <span className="sr-only">
-                {req.met ? " - Requirement met" : " - Requirement not met"}
+        {/* Password requirements list */}
+        <ul className="space-y-1.5" aria-label="Password requirements">
+          {strength.map((req, index) => (
+            <li 
+              key={index} 
+              className="flex items-center gap-2 transform transition-all duration-500 ease-out"
+              style={{
+                transitionDelay: `${index * 100 + 200}ms`, // Staggered animation
+                opacity: (isFocused || password) ? 1 : 0,
+                transform: (isFocused || password) 
+                  ? 'translateX(0)' 
+                  : 'translateX(-10px)'
+              }}
+            >
+              {req.met ? (
+                <Check size={16} className="text-emerald-500" aria-hidden="true" />
+              ) : (
+                <X size={16} className="text-muted-foreground/80" aria-hidden="true" />
+              )}
+              <span className={`text-xs ${req.met ? "text-emerald-600" : "text-muted-foreground"}`}>
+                {req.text}
+                <span className="sr-only">
+                  {req.met ? " - Requirement met" : " - Requirement not met"}
+                </span>
               </span>
-            </span>
-          </li>
-        ))}
-      </ul>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }

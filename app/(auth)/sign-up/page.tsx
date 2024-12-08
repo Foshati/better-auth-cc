@@ -3,10 +3,10 @@
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { redirect } from "next/navigation";
-import { Button } from "@/components/ui/button";
+
 import {
   Form,
+  FormControl,
   FormField,
   FormItem,
   FormLabel,
@@ -20,50 +20,63 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import Link from "next/link";
-import { formSchema } from "@/lib/auth-schema";
 import { authClient } from "@/lib/auth-client";
-import { toast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
 import InputSchema from "@/components/inputSchema";
+import { signUpSchema } from "@/lib/auth-schema";
+import { useState } from "react";
+import LoadingButton from "@/components/loading-button";
+import InputHide from "@/components/inputHide";
 
-export default function Signin() {
-  // 1. Define your form.
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+export default function SignUp() {
+  const [pending, setPending] = useState(false);
+  const { toast } = useToast();
+
+  const form = useForm<z.infer<typeof signUpSchema>>({
+    resolver: zodResolver(signUpSchema),
     defaultValues: {
       name: "",
       email: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    const { name, email, password } = values;
-    const { data:_data, error:_error } = await authClient.signUp.email(
-      { name, email, password, callbackURL: "/sign-in" },
+  const onSubmit = async (values: z.infer<typeof signUpSchema>) => {
+    await authClient.signUp.email(
+      {
+        email: values.email,
+        password: values.password,
+        name: values.name,
+      },
       {
         onRequest: () => {
-          toast({
-            title: "Please wait...",
-          });
+          setPending(true);
         },
         onSuccess: () => {
-          redirect("/sign-in");
-        },
-
-        onError: (ctx) => {
           toast({
-            title: ctx.error.message,
+            title: "Account created",
+            description:
+              "Your account has been created. Check your email for a verification link.",
+          });
+        },
+        onError: (ctx) => {
+          console.log("error", ctx);
+          toast({
+            title: "Something went wrong",
+            description: ctx.error.message ?? "Something went wrong.",
           });
         },
       }
     );
-  }
+    setPending(false);
+  };
 
   return (
     <>
-<Card className="w-full max-w-xs sm:max-w-sm lg:max-w-lg mx-auto my-28">
-<CardHeader>
+      <Card className="w-full max-w-xs sm:max-w-sm lg:max-w-lg mx-auto my-28">
+        <CardHeader>
           <CardTitle className="font-bold text-3xl">Sign up</CardTitle>
         </CardHeader>
         <CardContent>
@@ -105,9 +118,23 @@ export default function Signin() {
                 )}
               />
 
-              <Button className="w-full" type="submit">
-                Sign up
-              </Button>
+              <FormField
+                control={form.control}
+                name="confirmPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex items-center justify-between max-w-2xl">
+                      <FormLabel>confirmPassword</FormLabel>
+                    </div>
+                    <FormControl>
+                      <InputHide field={field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <LoadingButton pending={pending}>Sign up</LoadingButton>
             </form>
           </Form>
         </CardContent>
