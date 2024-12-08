@@ -1,4 +1,3 @@
-import ClientComponent from "@/components/client-component";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
@@ -20,7 +19,6 @@ export default async function DashboardPage() {
         <li>Name: {user.name}</li>
         <li>Email: {user.email}</li>
       </ul>
-      <ClientComponent />
     </div>
   );
 }
