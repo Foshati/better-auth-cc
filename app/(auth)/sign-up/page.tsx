@@ -73,6 +73,12 @@ export default function SignUp() {
     setPending(false);
   };
 
+  const isFormFilled =
+    form.watch("email").trim() !== "" &&
+    form.watch("password").trim() !== "" &&
+    form.watch("name").trim() !== "" &&
+    form.watch("confirmPassword").trim() !== "";
+
   return (
     <>
       <Card className="w-full max-w-xs sm:max-w-sm lg:max-w-lg mx-auto my-28">
@@ -82,6 +88,9 @@ export default function SignUp() {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+
+
+              
               <FormField
                 control={form.control}
                 name="name"
@@ -134,7 +143,7 @@ export default function SignUp() {
                 )}
               />
 
-              <LoadingButton pending={pending}>Sign up</LoadingButton>
+              <LoadingButton pending={pending}  disabled={!isFormFilled}>Sign up</LoadingButton>
             </form>
           </Form>
         </CardContent>

@@ -53,10 +53,12 @@ export default function ForgotPassword() {
     setIsPending(false);
   };
 
+  const isFormFilled = form.watch("email").trim() !== "";
+
   return (
     <>
       <Card className="w-full max-w-xs sm:max-w-sm lg:max-w-lg mx-auto my-28">
-      <CardHeader>
+        <CardHeader>
           <CardTitle className="text-3xl font-bold text-center text-gray-800">
             Forgot Password
           </CardTitle>
@@ -82,7 +84,9 @@ export default function ForgotPassword() {
                   </FormItem>
                 )}
               />
-              <LoadingButton pending={isPending}>Send Reset Link</LoadingButton>
+              <LoadingButton pending={isPending} disabled={!isFormFilled}>
+                Send Reset Link
+              </LoadingButton>
             </form>
           </Form>
         </CardContent>

@@ -78,10 +78,14 @@ function ResetPasswordContent() {
     );
   }
 
+  const isFormFilled =
+    form.watch("password").trim() !== "" &&
+    form.watch("confirmPassword").trim() !== "";
+
   return (
     <>
       <Card className="w-full max-w-xs sm:max-w-sm lg:max-w-lg mx-auto my-28">
-      <CardHeader>
+        <CardHeader>
           <CardTitle className="text-3xl font-bold text-center text-gray-800">
             Reset Password
           </CardTitle>
@@ -121,7 +125,9 @@ function ResetPasswordContent() {
                 )}
               />
 
-              <LoadingButton pending={isPending}>Reset Password</LoadingButton>
+              <LoadingButton pending={isPending} disabled={!isFormFilled}>
+                Reset Password
+              </LoadingButton>
             </form>
           </Form>
         </CardContent>

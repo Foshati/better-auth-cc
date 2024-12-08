@@ -73,6 +73,8 @@ export default function SignIn() {
     setPendingCredentials(false);
   };
 
+  const isFormFilled =form.watch("email").trim() !== "" && form.watch("password").trim() !== "";
+
   return (
     <>
       <Card className="w-full max-w-xs sm:max-w-sm lg:max-w-lg mx-auto my-28">
@@ -121,7 +123,10 @@ export default function SignIn() {
                   </FormItem>
                 )}
               />
-              <LoadingButton pending={pendingCredentials}>
+              <LoadingButton
+                pending={pendingCredentials}
+                disabled={!isFormFilled}
+              >
                 Sign in
               </LoadingButton>
             </form>
