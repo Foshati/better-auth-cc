@@ -1,9 +1,10 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import LoadingButton from "@/components/loading-button";
 import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
+import { LogOut } from "lucide-react";
+import SubmitButton from "@/components/submitButton";
 
 export default function SignoutButton() {
   const router = useRouter();
@@ -28,8 +29,9 @@ export default function SignoutButton() {
   };
 
   return (
-    <LoadingButton pending={pending} onClick={handleSignOut}>
-      Sign Out
-    </LoadingButton>
+    <SubmitButton pending={pending} onClick={handleSignOut}  className="w-full" variant="ghost">
+      <LogOut  />
+      Log Out
+    </SubmitButton>
   );
 }

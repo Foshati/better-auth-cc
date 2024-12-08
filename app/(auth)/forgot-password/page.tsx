@@ -16,8 +16,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
 import { authClient } from "@/lib/auth-client";
-import LoadingButton from "@/components/loading-button";
 import { forgotPasswordSchema } from "@/lib/auth-schema";
+import SubmitButton from "@/components/submitButton";
 
 export default function ForgotPassword() {
   const { toast } = useToast();
@@ -84,9 +84,9 @@ export default function ForgotPassword() {
                   </FormItem>
                 )}
               />
-              <LoadingButton pending={isPending} disabled={!isFormFilled}>
+              <SubmitButton pending={isPending} disabled={!isFormFilled} className="w-full">
                 Send Reset Link
-              </LoadingButton>
+              </SubmitButton>
             </form>
           </Form>
         </CardContent>

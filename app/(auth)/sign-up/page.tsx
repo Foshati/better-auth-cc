@@ -3,6 +3,8 @@
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useState } from "react";
+import Link from "next/link";
 
 import {
   Form,
@@ -19,18 +21,19 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import Link from "next/link";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Input } from "@/components/ui/input";
+
 import { authClient } from "@/lib/auth-client";
 import { useToast } from "@/hooks/use-toast";
-import { Input } from "@/components/ui/input";
 import InputSchema from "@/components/inputSchema";
 import { signUpSchema } from "@/lib/auth-schema";
-import { useState } from "react";
-import LoadingButton from "@/components/loading-button";
 import InputHide from "@/components/inputHide";
+import SubmitButton from "@/components/submitButton";
 
 export default function SignUp() {
   const [pending, setPending] = useState(false);
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof signUpSchema>>({
@@ -40,37 +43,105 @@ export default function SignUp() {
       email: "",
       password: "",
       confirmPassword: "",
+      avatar: undefined,
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof signUpSchema>) => {
-    await authClient.signUp.email(
-      {
-        email: values.email,
-        password: values.password,
-        name: values.name,
-      },
-      {
-        onRequest: () => {
-          setPending(true);
-        },
-        onSuccess: () => {
-          toast({
-            title: "Account created",
-            description:
-              "Your account has been created. Check your email for a verification link.",
-          });
-        },
-        onError: (ctx) => {
-          console.log("error", ctx);
-          toast({
-            title: "Something went wrong",
-            description: ctx.error.message ?? "Something went wrong.",
-          });
-        },
+  const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        toast({
+          title: "File too large",
+          description: "Avatar must be less than 5MB.",
+          variant: "destructive",
+        });
+        return;
       }
-    );
-    setPending(false);
+
+      // Validate file type
+      const validTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+      if (!validTypes.includes(file.type)) {
+        toast({
+          title: "Invalid file type",
+          description: "Please upload a JPEG, PNG, GIF, or WebP image.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Create preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setAvatarPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+
+      // Set file in form
+      form.setValue("avatar", file);
+    }
+  };
+
+  const onSubmit = async (values: z.infer<typeof signUpSchema>) => {
+    setPending(true);
+
+    try {
+      // If avatar is present, upload it first
+      let avatarUrl = null;
+      if (values.avatar) {
+        const formData = new FormData();
+        formData.append("file", values.avatar);
+
+        // Assuming you have an upload endpoint that returns the URL
+        const uploadResponse = await fetch("/api/upload", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!uploadResponse.ok) {
+          throw new Error("Avatar upload failed");
+        }
+
+        const uploadResult = await uploadResponse.json();
+        avatarUrl = uploadResult.url;
+      }
+
+      // Sign up with optional avatar URL
+      await authClient.signUp.email(
+        {
+          email: values.email,
+          password: values.password,
+          name: values.name,
+          image: avatarUrl, // Optional avatar URL
+        },
+        {
+          onSuccess: () => {
+            toast({
+              title: "Account created",
+              description:
+                "Your account has been created. Check your email for a verification link.",
+            });
+          },
+          onError: (ctx) => {
+            console.error("error", ctx);
+            toast({
+              title: "Something went wrong",
+              description: ctx.error.message ?? "Something went wrong.",
+            });
+          },
+        }
+      );
+    } catch (error) {
+      console.error("Signup error:", error);
+      toast({
+        title: "Signup Failed",
+        description: "Unable to complete signup. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setPending(false);
+    }
   };
 
   const isFormFilled =
@@ -88,9 +159,28 @@ export default function SignUp() {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              {/* Avatar Upload */}
+              <FormItem className="flex flex-col items-center space-y-4">
+                <FormLabel>Profile Picture (Optional)</FormLabel>
+                <div className="flex items-center space-x-4">
+                  <Avatar className="w-20 h-20">
+                    <AvatarImage
+                      src={avatarPreview || undefined}
+                      alt="Profile Picture"
+                      className="object-cover"
+                    />
+                    <AvatarFallback></AvatarFallback>
+                  </Avatar>
 
+                  <Input
+                    type="file"
+                    accept="image/jpeg,image/png,image/gif,image/webp"
+                    onChange={handleAvatarChange}
+                    className="flex-grow"
+                  />
+                </div>
+              </FormItem>
 
-              
               <FormField
                 control={form.control}
                 name="name"
@@ -133,7 +223,7 @@ export default function SignUp() {
                 render={({ field }) => (
                   <FormItem>
                     <div className="flex items-center justify-between max-w-2xl">
-                      <FormLabel>confirmPassword</FormLabel>
+                      <FormLabel>Confirm Password</FormLabel>
                     </div>
                     <FormControl>
                       <InputHide field={field} />
@@ -143,7 +233,13 @@ export default function SignUp() {
                 )}
               />
 
-              <LoadingButton pending={pending}  disabled={!isFormFilled}>Sign up</LoadingButton>
+              <SubmitButton
+                className="w-full"
+                pending={pending}
+                disabled={!isFormFilled}
+              >
+                Sign up
+              </SubmitButton>
             </form>
           </Form>
         </CardContent>

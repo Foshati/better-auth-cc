@@ -18,8 +18,8 @@ import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { resetPasswordSchema } from "@/lib/auth-schema";
 import { useToast } from "@/hooks/use-toast";
-import LoadingButton from "@/components/loading-button";
 import InputHide from "@/components/inputHide";
+import SubmitButton from "@/components/submitButton";
 
 function ResetPasswordContent() {
   const router = useRouter();
@@ -125,9 +125,9 @@ function ResetPasswordContent() {
                 )}
               />
 
-              <LoadingButton pending={isPending} disabled={!isFormFilled}>
+              <SubmitButton pending={isPending} disabled={!isFormFilled} className="w-full">
                 Reset Password
-              </LoadingButton>
+              </SubmitButton>
             </form>
           </Form>
         </CardContent>

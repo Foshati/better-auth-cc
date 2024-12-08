@@ -130,7 +130,7 @@ export default function InputSchema({
             aria-invalid={strengthScore < 4}
             aria-describedby="password-strength"
           />
-          <div className="absolute inset-y-0 end-0 flex items-center">
+          <div className="absolute inset-y-0 end-0 -mr-2 flex items-center">
             <button
               className="mr-1 p-1.5 rounded-full text-muted-foreground/80 transition-all hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/30"
               type="button"

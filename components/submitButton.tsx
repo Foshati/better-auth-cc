@@ -1,22 +1,25 @@
 import { Button } from "@/components/ui/button";
+import { ButtonProps } from "@/components/ui/button"; // فرض کنید ButtonProps تعریف شده باشد
 
-export default function LoadingButton({
+interface LoadingButtonProps extends ButtonProps {
+  pending: boolean;
+  onClick?: () => void;
+}
+
+export default function SubmitButton({
   pending,
   children,
   onClick,
   disabled = false,
-}: {
-  pending: boolean;
-  children: React.ReactNode;
-  onClick?: () => void;
-  disabled?: boolean;
-}) {
+  className,
+  ...rest
+}: LoadingButtonProps) {
   return (
     <Button
       onClick={onClick}
-      className="w-full"
-      type="submit"
+      className={className || ""}
       disabled={pending || disabled}
+      {...rest} // انتقال باقی props
     >
       {pending ? (
         <div className="flex items-center justify-center">

@@ -35,6 +35,7 @@ export const signUpSchema = object({
   email: getEmailSchema(),
   password: getPasswordSchema("password"),
   confirmPassword: getPasswordSchema("confirmPassword"),
+  avatar: z.instanceof(File).optional()
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords don't match",
   path: ["confirmPassword"],

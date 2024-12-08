@@ -29,7 +29,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { ErrorContext } from "@better-fetch/fetch";
-import LoadingButton from "@/components/loading-button";
+import SubmitButton from "@/components/submitButton";
 
 export default function SignIn() {
   const router = useRouter();
@@ -123,12 +123,13 @@ export default function SignIn() {
                   </FormItem>
                 )}
               />
-              <LoadingButton
+              <SubmitButton
+              className="w-full"
                 pending={pendingCredentials}
                 disabled={!isFormFilled}
               >
                 Sign in
-              </LoadingButton>
+              </SubmitButton>
             </form>
           </Form>
 
