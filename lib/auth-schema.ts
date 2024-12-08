@@ -20,6 +20,13 @@ const getPasswordSchema = (type: "password" | "confirmPassword") =>
     .min(8, `${type} must be atleast 8 characters`)
     .max(32, `${type} can not exceed 32 characters`);
 
+const getUserNameSchema =()=>
+  string({ required_error: "Username is required" })
+    .min(3, "Username must be atleast 3 characters")
+    .max(32, "Username can not exceed 32 characters")
+    .regex(/^[a-zA-Z0-9]+$/, "Username can only contain letters and numbers")
+
+
 const getEmailSchema = () =>
   string({ required_error: "Email is required" })
     .min(1, "Email is required")
@@ -32,6 +39,7 @@ const getNameSchema = () =>
 
 export const signUpSchema = object({
   name: getNameSchema(),
+  username: getUserNameSchema(),
   email: getEmailSchema(),
   password: getPasswordSchema("password"),
   confirmPassword: getPasswordSchema("confirmPassword"),

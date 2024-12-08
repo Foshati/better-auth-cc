@@ -73,6 +73,9 @@ export default async function Navbar() {
                   <span className="text-xs text-muted-foreground">
                     {session.user?.email}
                   </span>
+                  <span className="text-xs text-muted-foreground">
+                    {session.user?.username}
+                  </span>
                 </div>
               </div>
             </DropdownMenuLabel>

@@ -40,6 +40,7 @@ export default function SignUp() {
     resolver: zodResolver(signUpSchema),
     defaultValues: {
       name: "",
+      username: "",
       email: "",
       password: "",
       confirmPassword: "",
@@ -111,6 +112,7 @@ export default function SignUp() {
       await authClient.signUp.email(
         {
           email: values.email,
+          username: values.username,
           password: values.password,
           name: values.name,
           image: avatarUrl, // Optional avatar URL
@@ -146,6 +148,7 @@ export default function SignUp() {
 
   const isFormFilled =
     form.watch("email").trim() !== "" &&
+    form.watch("username").trim() !== "" &&
     form.watch("password").trim() !== "" &&
     form.watch("name").trim() !== "" &&
     form.watch("confirmPassword").trim() !== "";
@@ -188,6 +191,18 @@ export default function SignUp() {
                   <FormItem>
                     <FormLabel>Name</FormLabel>
                     <Input placeholder="Sam Foshati" {...field} />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="username"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>username</FormLabel>
+                    <Input placeholder="username" {...field} />
                     <FormMessage />
                   </FormItem>
                 )}

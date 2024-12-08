@@ -25,7 +25,10 @@ model User {
   banExpires DateTime?
   premium    Boolean?
 
+  username String?
+
   @@map("user")
+  @@unique([username])
 }
 
 model Session {
