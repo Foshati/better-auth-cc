@@ -50,18 +50,18 @@ const getNameSchema = () =>
     .min(1, "Name is required")
     .max(50, "Name must be less than 50 characters");
 
-export const signUpSchema = object({
-  name: getNameSchema(),
-  username: getUserNameSchema(),
-  email: getEmailSchema(),
-  password: getPasswordSchema("password"),
-  confirmPassword: getPasswordSchema("confirmPassword"),
-  avatar: z.instanceof(File).optional()
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
-});
-
+    export const signUpSchema = object({
+      name: getNameSchema(),
+      username: getUserNameSchema(),
+      email: getEmailSchema(),
+      password: passwordValidation,
+      confirmPassword: passwordValidation,
+      avatar: z.union([z.instanceof(File), z.null()]).optional(), // Allows File or null
+    }).refine((data) => data.password === data.confirmPassword, {
+      message: "Passwords don't match",
+      path: ["confirmPassword"],
+    });
+    
 export const signInSchema = object({
   email: getEmailSchema(),
   password: getPasswordSchema("password"),

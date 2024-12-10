@@ -1,5 +1,4 @@
 "use client";
-
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -23,13 +22,14 @@ import {
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 import { authClient } from "@/lib/auth-client";
 import { useToast } from "@/hooks/use-toast";
-import InputSchema from "@/components/inputSchema";
 import { signUpSchema } from "@/lib/auth-schema";
 import InputHide from "@/components/inputHide";
 import SubmitButton from "@/components/submitButton";
+import { CircleUserRound, X } from "lucide-react";
 
 export default function SignUp() {
   const [pending, setPending] = useState(false);
@@ -44,7 +44,7 @@ export default function SignUp() {
       email: "",
       password: "",
       confirmPassword: "",
-      avatar: undefined,
+      avatar: null, // Set initial avatar to null
     },
   });
 
@@ -84,7 +84,21 @@ export default function SignUp() {
     }
   };
 
+  const handleAvatarRemove = () => {
+    setAvatarPreview(null);
+    form.setValue("avatar", null); // Set to null on remove
+  };
+
   const onSubmit = async (values: z.infer<typeof signUpSchema>) => {
+    if (values.password !== values.confirmPassword) {
+      toast({
+        title: "Passwords do not match",
+        description: "Please ensure the passwords match.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setPending(true);
 
     try {
@@ -94,14 +108,14 @@ export default function SignUp() {
         const formData = new FormData();
         formData.append("file", values.avatar);
 
-        // Assuming you have an upload endpoint that returns the URL
         const uploadResponse = await fetch("/api/upload", {
           method: "POST",
           body: formData,
         });
 
         if (!uploadResponse.ok) {
-          throw new Error("Avatar upload failed");
+          const errorDetails = await uploadResponse.json();
+          throw new Error(errorDetails.message || "Avatar upload failed");
         }
 
         const uploadResult = await uploadResponse.json();
@@ -115,7 +129,7 @@ export default function SignUp() {
           username: values.username,
           password: values.password,
           name: values.name,
-          image: avatarUrl, // Optional avatar URL
+          image: avatarUrl,
         },
         {
           onSuccess: () => {
@@ -125,20 +139,20 @@ export default function SignUp() {
                 "Your account has been created. Check your email for a verification link.",
             });
           },
-          onError: (ctx) => {
-            console.error("error", ctx);
+          onError: (errorContext: { error: unknown }) => {
             toast({
               title: "Something went wrong",
-              description: ctx.error.message ?? "Something went wrong.",
+              description:
+                (errorContext.error as Error).message ?? "An unknown error occurred.",
+              variant: "destructive",
             });
           },
         }
       );
     } catch (error) {
-      console.error("Signup error:", error);
       toast({
         title: "Signup Failed",
-        description: "Unable to complete signup. Please try again.",
+        description: (error as Error).message || "Unable to complete signup. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -154,119 +168,130 @@ export default function SignUp() {
     form.watch("confirmPassword").trim() !== "";
 
   return (
-    <>
-      <Card className="w-full max-w-xs sm:max-w-sm lg:max-w-lg mx-auto my-28">
-        <CardHeader>
-          <CardTitle className="font-bold text-3xl">Sign up</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              {/* Avatar Upload */}
-              <FormItem className="flex flex-col items-center space-y-4">
-                <FormLabel>Profile Picture (Optional)</FormLabel>
-                <div className="flex items-center space-x-4">
-                  <Avatar className="w-20 h-20">
-                    <AvatarImage
-                      src={avatarPreview || undefined}
-                      alt="Profile Picture"
-                      className="object-cover"
-                    />
-                    <AvatarFallback></AvatarFallback>
-                  </Avatar>
+    <Card className="w-full max-w-xs sm:max-w-sm lg:max-w-lg mx-auto my-28">
+      <CardHeader>
+        <CardTitle className="font-bold text-3xl">Sign up</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
 
-                  <Input
-                    type="file"
-                    accept="image/jpeg,image/png,image/gif,image/webp"
-                    onChange={handleAvatarChange}
-                    className="flex-grow"
-                  />
-                </div>
-              </FormItem>
 
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Name</FormLabel>
-                    <Input placeholder="Sam Foshati" {...field} />
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+          <FormItem className="flex flex-row space-y-4  ">
+  <div className="relative inline-flex justify-center items-center w-full gap-4">
+    <Avatar className="w-20 h-20">
+      <AvatarImage
+        src={avatarPreview || undefined}
+        alt="Profile Picture"
+        className="object-cover"
+      />
+      <AvatarFallback>
+        {/* <CircleUserRound className="opacity-60" size={36} strokeWidth={2} /> */}
+      </AvatarFallback>
+    </Avatar>
+    {avatarPreview && (
+      <Button
+        type="button"
+        onClick={handleAvatarRemove}
+        size="icon"
+        variant="destructive"
+        className="absolute -right-2 -top-2 size-6 rounded-full border-2 border-background"
+        aria-label="Remove avatar"
+      >
+        <X size={16} />
+      </Button>
+    )}
+    {!avatarPreview && (
+      <Input
+        type="file"
+        accept="image/jpeg,image/png,image/gif,image/webp"
+        onChange={handleAvatarChange}
+        aria-label="Upload profile picture"
+        className=" w-full"
+      />
+    )}
+  </div>
+</FormItem>
 
-              <FormField
-                control={form.control}
-                name="username"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>username</FormLabel>
-                    <Input placeholder="username" {...field} />
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            {/* Other form fields */}
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <Input placeholder="Sam Foshati" {...field} />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <Input placeholder="foshatia@gmail.com" {...field} />
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            <FormField
+              control={form.control}
+              name="username"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Username</FormLabel>
+                  <Input placeholder="username" {...field} />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Password</FormLabel>
-                    <InputSchema {...field} />
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <Input placeholder="foshatia@gmail.com" {...field} />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-              <FormField
-                control={form.control}
-                name="confirmPassword"
-                render={({ field }) => (
-                  <FormItem>
-                    <div className="flex items-center justify-between max-w-2xl">
-                      <FormLabel>Confirm Password</FormLabel>
-                    </div>
-                    <FormControl>
-                      <InputHide field={field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <InputHide field={field} />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-              <SubmitButton
-                className="w-full"
-                pending={pending}
-                disabled={!isFormFilled}
-              >
-                Sign up
-              </SubmitButton>
-            </form>
-          </Form>
-        </CardContent>
-        <CardFooter>
-          <p className="text-xs font-medium text-slate-700">
-            Already have an account?
-          </p>
-          <Link className="text-sm font-bold ml-2" href="/sign-in">
-            Sign in
-          </Link>
-        </CardFooter>
-      </Card>
-    </>
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirm Password</FormLabel>
+                  <InputHide field={field} />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <SubmitButton
+              className="w-full"
+              pending={pending}
+              disabled={!isFormFilled}
+            >
+              Sign up
+            </SubmitButton>
+          </form>
+        </Form>
+      </CardContent>
+      <CardFooter>
+        <p className="text-xs font-medium text-slate-700">
+          Already have an account?
+        </p>
+        <Link className="text-sm font-bold ml-2" href="/sign-in">
+          Sign in
+        </Link>
+      </CardFooter>
+    </Card>
   );
 }
