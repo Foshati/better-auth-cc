@@ -29,7 +29,7 @@ import { useToast } from "@/hooks/use-toast";
 import { signUpSchema } from "@/lib/auth-schema";
 import InputHide from "@/components/inputHide";
 import SubmitButton from "@/components/submitButton";
-import { CircleUserRound, X } from "lucide-react";
+import InputSchema from "@/components/inputSchema";
 
 export default function SignUp() {
   const [pending, setPending] = useState(false);
@@ -44,65 +44,63 @@ export default function SignUp() {
       email: "",
       password: "",
       confirmPassword: "",
-      avatar: null, // Set initial avatar to null
+      avatar: null,
     },
+    mode: "onChange", // Validate on change
   });
 
   const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      // Validate file size (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
+      // More comprehensive file validation
+      const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+      const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+
+      if (file.size > MAX_FILE_SIZE) {
         toast({
-          title: "File too large",
+          title: "File Size Exceeded",
           description: "Avatar must be less than 5MB.",
           variant: "destructive",
         });
+        event.target.value = ''; // Clear the file input
         return;
       }
 
-      // Validate file type
-      const validTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
-      if (!validTypes.includes(file.type)) {
+      if (!ALLOWED_TYPES.includes(file.type)) {
         toast({
-          title: "Invalid file type",
-          description: "Please upload a JPEG, PNG, GIF, or WebP image.",
+          title: "Invalid File Type",
+          description: "Only JPEG, PNG, GIF, and WebP images are allowed.",
           variant: "destructive",
         });
+        event.target.value = ''; // Clear the file input
         return;
       }
 
-      // Create preview
       const reader = new FileReader();
       reader.onloadend = () => {
         setAvatarPreview(reader.result as string);
       };
       reader.readAsDataURL(file);
 
-      // Set file in form
-      form.setValue("avatar", file);
+      form.setValue("avatar", file, { 
+        shouldValidate: true, 
+        shouldDirty: true 
+      });
     }
   };
 
   const handleAvatarRemove = () => {
     setAvatarPreview(null);
-    form.setValue("avatar", null); // Set to null on remove
+    form.setValue("avatar", null, { 
+      shouldValidate: true, 
+      shouldDirty: true 
+    });
   };
 
   const onSubmit = async (values: z.infer<typeof signUpSchema>) => {
-    if (values.password !== values.confirmPassword) {
-      toast({
-        title: "Passwords do not match",
-        description: "Please ensure the passwords match.",
-        variant: "destructive",
-      });
-      return;
-    }
-
     setPending(true);
 
     try {
-      // If avatar is present, upload it first
       let avatarUrl = null;
       if (values.avatar) {
         const formData = new FormData();
@@ -122,7 +120,6 @@ export default function SignUp() {
         avatarUrl = uploadResult.url;
       }
 
-      // Sign up with optional avatar URL
       await authClient.signUp.email(
         {
           email: values.email,
@@ -134,16 +131,16 @@ export default function SignUp() {
         {
           onSuccess: () => {
             toast({
-              title: "Account created",
-              description:
-                "Your account has been created. Check your email for a verification link.",
+              title: "Account Created",
+              description: "Your account has been created. Check your email for verification.",
             });
+            // Optional: Reset form or redirect
+            form.reset();
           },
           onError: (errorContext: { error: unknown }) => {
             toast({
-              title: "Something went wrong",
-              description:
-                (errorContext.error as Error).message ?? "An unknown error occurred.",
+              title: "Signup Failed",
+              description: (errorContext.error as Error).message || "An unknown error occurred.",
               variant: "destructive",
             });
           },
@@ -152,7 +149,7 @@ export default function SignUp() {
     } catch (error) {
       toast({
         title: "Signup Failed",
-        description: (error as Error).message || "Unable to complete signup. Please try again.",
+        description: (error as Error).message || "Unable to complete signup.",
         variant: "destructive",
       });
     } finally {
@@ -160,137 +157,144 @@ export default function SignUp() {
     }
   };
 
-  const isFormFilled =
-    form.watch("email").trim() !== "" &&
-    form.watch("username").trim() !== "" &&
-    form.watch("password").trim() !== "" &&
-    form.watch("name").trim() !== "" &&
-    form.watch("confirmPassword").trim() !== "";
+  // More dynamic form validation check
+  const isFormValid = Object.values(form.watch()).every(
+    (value) => value !== null && value !== ""
+  ) && Object.keys(form.formState.errors).length === 0;
 
   return (
     <Card className="w-full max-w-xs sm:max-w-sm lg:max-w-lg mx-auto my-28">
       <CardHeader>
-        <CardTitle className="font-bold text-3xl">Sign up</CardTitle>
+        <CardTitle className="font-bold text-3xl">Sign Up</CardTitle>
       </CardHeader>
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            {/* Avatar Upload Section */}
+            <FormItem className="flex flex-col items-center space-y-4">
+              <Avatar className="w-24 h-24 relative">
+                <AvatarImage
+                  src={avatarPreview || undefined}
+                  alt="Profile Picture"
+                  className="object-cover"
+                />
+                <AvatarFallback>Profile</AvatarFallback>
+                {avatarPreview && (
+                  <Button
+                    type="button"
+                    onClick={handleAvatarRemove}
+                    className="absolute top-0 right-0 bg-red-500 text-white w-6 h-6 p-0 rounded-full hover:bg-red-600"
+                    aria-label="Remove avatar"
+                  >
+                    ✕
+                  </Button>
+                )}
+              </Avatar>
+              {!avatarPreview && (
+                <Input
+                  type="file"
+                  accept="image/jpeg,image/png,image/gif,image/webp"
+                  onChange={handleAvatarChange}
+                  aria-label="Upload profile picture"
+                  className="mt-4 w-full"
+                />
+              )}
+            </FormItem>
 
-
-          <FormItem className="flex flex-row space-y-4  ">
-  <div className="relative inline-flex justify-center items-center w-full gap-4">
-    <Avatar className="w-20 h-20">
-      <AvatarImage
-        src={avatarPreview || undefined}
-        alt="Profile Picture"
-        className="object-cover"
-      />
-      <AvatarFallback>
-        {/* <CircleUserRound className="opacity-60" size={36} strokeWidth={2} /> */}
-      </AvatarFallback>
-    </Avatar>
-    {avatarPreview && (
-      <Button
-        type="button"
-        onClick={handleAvatarRemove}
-        size="icon"
-        variant="destructive"
-        className="absolute -right-2 -top-2 size-6 rounded-full border-2 border-background"
-        aria-label="Remove avatar"
-      >
-        <X size={16} />
-      </Button>
-    )}
-    {!avatarPreview && (
-      <Input
-        type="file"
-        accept="image/jpeg,image/png,image/gif,image/webp"
-        onChange={handleAvatarChange}
-        aria-label="Upload profile picture"
-        className=" w-full"
-      />
-    )}
-  </div>
-</FormItem>
-
-            {/* Other form fields */}
+            {/* Name Field */}
             <FormField
               control={form.control}
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <Input placeholder="Sam Foshati" {...field} />
+                  <FormLabel>Full Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="John Doe" {...field} />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
+            {/* Username Field */}
             <FormField
               control={form.control}
               name="username"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Username</FormLabel>
-                  <Input placeholder="username" {...field} />
+                  <FormControl>
+                    <Input placeholder="johndoe" {...field} />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
+            {/* Email Field */}
             <FormField
               control={form.control}
               name="email"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Email</FormLabel>
-                  <Input placeholder="foshatia@gmail.com" {...field} />
+                  <FormControl>
+                    <Input placeholder="johndoe@example.com" {...field} />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
+            {/* Password Field */}
             <FormField
               control={form.control}
               name="password"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Password</FormLabel>
-                  <InputHide field={field} />
+                  <FormControl>
+                    <InputSchema {...field} />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
+            {/* Confirm Password Field */}
             <FormField
               control={form.control}
               name="confirmPassword"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Confirm Password</FormLabel>
-                  <InputHide field={field} />
+                  <FormControl>
+                    <InputHide field={field} />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
+            {/* Submit Button */}
             <SubmitButton
-              className="w-full"
+              type="submit"
+              className="w-full mt-6"
+              disabled={!isFormValid || pending}
               pending={pending}
-              disabled={!isFormFilled}
             >
-              Sign up
+              Create Account
             </SubmitButton>
           </form>
         </Form>
       </CardContent>
-      <CardFooter>
-        <p className="text-xs font-medium text-slate-700">
-          Already have an account?
+      <CardFooter className="justify-center">
+        <p className="text-sm text-gray-600">
+          Already have an account?{" "}
+          <Link href="/sign-in" className="text-blue-600 hover:underline font-semibold">
+            Sign In
+          </Link>
         </p>
-        <Link className="text-sm font-bold ml-2" href="/sign-in">
-          Sign in
-        </Link>
       </CardFooter>
     </Card>
   );
