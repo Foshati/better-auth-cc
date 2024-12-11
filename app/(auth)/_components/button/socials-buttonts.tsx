@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from '../ui/button';
+import { Button } from '../../../../components/ui/button';
 import { signinGithub, signinGoogle } from '@/lib/social/client';
 import { GitHubIcon, GoogleIcon, MicrosoftIcon, TwitterXIcon } from '@/public/icons/icons';
 

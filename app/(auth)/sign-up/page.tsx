@@ -23,11 +23,11 @@ import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
 import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
-import InputSchema from "@/components/inputSchema";
 import { signUpSchema } from "@/lib/auth-schema";
 import { useState } from "react";
-import InputHide from "@/components/inputHide";
 import SubmitButton from "@/components/submitButton";
+import InputSchema from "../_components/input/hard-input";
+import InputHide from "../_components/input/hide-input";
 
 export default function SignUp() {
   const [pending, setPending] = useState(false);

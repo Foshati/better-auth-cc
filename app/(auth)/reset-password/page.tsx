@@ -18,8 +18,8 @@ import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { resetPasswordSchema } from "@/lib/auth-schema";
 import { useToast } from "@/hooks/use-toast";
-import InputHide from "@/components/inputHide";
 import SubmitButton from "@/components/submitButton";
+import InputHide from "../_components/input/hide-input";
 
 function ResetPasswordContent() {
   const router = useRouter();

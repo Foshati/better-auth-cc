@@ -22,14 +22,14 @@ import {
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
 import { Input } from "@/components/ui/input";
-import InputHide from "@/components/inputHide";
-import SocialButtons from "@/components/auth/socialsButtonts";
+import SocialButtons from "@/app/(auth)/_components/button/socials-buttonts";
 import { signInSchema } from "@/lib/auth-schema";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { ErrorContext } from "@better-fetch/fetch";
 import SubmitButton from "@/components/submitButton";
+import InputHide from "../_components/input/hide-input";
 
 export default function SignIn() {
   const router = useRouter();

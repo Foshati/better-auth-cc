@@ -1,9 +1,9 @@
 "use client";
 
+import { Input } from "@/components/ui/input";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { FieldValues, UseControllerProps } from "react-hook-form";
-import { Input } from "./ui/input";
 
 interface InputHideProps {
   field: UseControllerProps<FieldValues>; // Proper typing from react-hook-form

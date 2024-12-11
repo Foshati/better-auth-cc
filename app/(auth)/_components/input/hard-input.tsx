@@ -1,7 +1,7 @@
+import { Input } from "@/components/ui/input";
 import { Check, Eye, EyeOff, KeyRound, X } from "lucide-react";
 import { useMemo, useState, useRef } from "react";
-import { Label } from "./ui/label";
-import { Input } from "./ui/input";
+
 
 type InputSchemaProps = {
   value: string;

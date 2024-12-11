@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/table";
 import { User } from "@prisma/client";
 import { useState, useEffect } from "react";
-import ImpersonateUser from "./impersonate-user";
+import ImpersonateUser from "./user-impersonate";
 import { authClient } from "@/lib/auth-client";
 
 export default function UsersTable() {

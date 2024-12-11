@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 import { Fingerprint, User, Settings } from "lucide-react";
@@ -12,30 +11,26 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import SignoutButton from "../app/(auth)/_components/button/signout-button";
+import Link from "next/link";
+import SignoutButton from "../button/signout-button";
 
-export default async function Navbar() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  // Function to get initials from name
-  const getInitials = (name?: string) => {
-    if (!name) return "UN";
-    const names = name.split(" ");
-    return names
-      .map((n) => n[0].toUpperCase())
-      .slice(0, 2)
-      .join("");
-  };
-
+export const UserProfile = async() => {
+    const session = await auth.api.getSession({
+        headers: await headers(),
+      });
+    
+      // Function to get initials from name
+      const getInitials = (name?: string) => {
+        if (!name) return "UN";
+        const names = name.split(" ");
+        return names
+          .map((n) => n[0].toUpperCase())
+          .slice(0, 2)
+          .join("");
+      };
   return (
-    <nav className="flex justify-between items-center py-3 px-4 fixed top-0 left-0 right-0 z-50 bg-slate-100">
-      <Link href="/" className="text-xl font-bold">
-        better-auth
-      </Link>
-
-      {!session ? (
+    <div>
+         {!session ? (
         <div className="flex gap-2 justify-center">
           <Link href="/sign-in" className="text-lg">
             <Fingerprint />
@@ -73,9 +68,7 @@ export default async function Navbar() {
                   <span className="text-xs text-muted-foreground">
                     {session.user?.email}
                   </span>
-                  <span className="text-xs text-muted-foreground">
-                    {session.user?.username}
-                  </span>
+              
                 </div>
               </div>
             </DropdownMenuLabel>
@@ -95,6 +88,6 @@ export default async function Navbar() {
           </DropdownMenuContent>
         </DropdownMenu>
       )}
-    </nav>
-  );
+    </div>
+  )
 }
