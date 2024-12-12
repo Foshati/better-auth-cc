@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Navbar from "@/components/navbar";
+import Navbar from "@/components/layout/navbar";
 import { Toaster } from "@/components/ui/toaster";
 import { Lexend } from "next/font/google";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const font = Lexend({
   subsets: ["latin"],
@@ -21,11 +22,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={font.className} >
+      <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
         <Navbar />
         {children}
         <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );
