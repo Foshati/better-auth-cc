@@ -4,22 +4,8 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-
+import { Form } from "@/components/ui/form";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
 import { useToast } from "@/hooks/use-toast";
@@ -32,7 +18,7 @@ import UsernameInput from "./_components/UsernameInput";
 import EmailInput from "./_components/EmailInput";
 import PasswordInput from "./_components/PasswordInput";
 import ConfirmPasswordInput from "./_components/ConfirmPasswordInput";
-
+import AvatarUploader from "./_components/AvatarUploader";
 
 
 export default function SignUp() {
@@ -47,6 +33,7 @@ export default function SignUp() {
       username: "",
       password: "",
       confirmPassword: "",
+      avatar: undefined, 
     },
   });
 
@@ -70,6 +57,7 @@ export default function SignUp() {
           password: values.password,
           name: values.name,
           username: values.username,
+          avatar: values.avatar || undefined , // ارسال avatar اگر موجود باشد
         },
         {
           onRequest: () => {
@@ -175,6 +163,7 @@ export default function SignUp() {
             <EmailInput control={form.control} />
             <PasswordInput control={form.control} />
             <ConfirmPasswordInput control={form.control} />
+            <AvatarUploader control={form.control} /> {/* Avatar uploader component */}
 
             <SubmitButton
               className="w-full"
