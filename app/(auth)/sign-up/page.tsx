@@ -23,12 +23,17 @@ import {
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
 import { useToast } from "@/hooks/use-toast";
-import { Input } from "@/components/ui/input";
 import { signUpSchema } from "@/lib/auth-schema";
 import { useState } from "react";
+
 import SubmitButton from "@/components/submitButton";
-import InputSchema from "../_components/input/hard-input";
-import InputHide from "../_components/input/hide-input";
+import NameInput from "./_components/NameInput";
+import UsernameInput from "./_components/UsernameInput";
+import EmailInput from "./_components/EmailInput";
+import PasswordInput from "./_components/PasswordInput";
+import ConfirmPasswordInput from "./_components/ConfirmPasswordInput";
+
+
 
 export default function SignUp() {
   const [pending, setPending] = useState(false);
@@ -46,11 +51,9 @@ export default function SignUp() {
   });
 
   const onSubmit = async (values: z.infer<typeof signUpSchema>) => {
-    // First, validate the entire form
     const validationResult = signUpSchema.safeParse(values);
 
     if (!validationResult.success) {
-      // If validation fails, set form errors
       validationResult.error.errors.forEach((error) => {
         form.setError(error.path[0] as keyof z.infer<typeof signUpSchema>, {
           type: "manual",
@@ -83,7 +86,6 @@ export default function SignUp() {
             let errorField = "";
             let errorMessage = ctx.error.message ?? "Something went wrong.";
 
-            // Specific error handling for different fields
             switch (ctx.error.code) {
               case "USERNAME_TAKEN":
                 errorField = "Username";
@@ -128,11 +130,9 @@ export default function SignUp() {
                 });
                 break;
               default:
-                // For unexpected errors
                 errorField = "Account";
             }
 
-            // Toast with more informative message
             toast({
               title: `${errorField} Error`,
               description: errorMessage,
@@ -144,7 +144,6 @@ export default function SignUp() {
     } catch (error: any) {
       console.error("Signup failed", error);
 
-      // Generic error handling
       toast({
         title: "Signup Failed",
         description:
@@ -164,107 +163,37 @@ export default function SignUp() {
     form.watch("confirmPassword").trim() !== "";
 
   return (
-    <>
-      <Card className="w-full max-w-xs sm:max-w-sm lg:max-w-lg mx-auto my-28">
-        <CardHeader>
-          <CardTitle className="font-bold text-3xl">Sign up</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Name</FormLabel>
-                    <Input placeholder="Sam Foshati" {...field} />
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+    <Card className="w-full max-w-xs sm:max-w-sm lg:max-w-lg mx-auto my-28">
+      <CardHeader>
+        <CardTitle className="font-bold text-3xl">Sign up</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <NameInput control={form.control} />
+            <UsernameInput control={form.control} />
+            <EmailInput control={form.control} />
+            <PasswordInput control={form.control} />
+            <ConfirmPasswordInput control={form.control} />
 
-              <FormField
-                control={form.control}
-                name="username"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Username</FormLabel>
-                    <Input
-                      placeholder="@Foshati"
-                      {...field}
-                      // Optional: Automatically add @ if not present
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        field.onChange(
-                          value.startsWith("@") ? value : `@${value}`
-                        );
-                      }}
-                    />
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <Input placeholder="foshatia@gmail.com" {...field} />
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Password</FormLabel>
-                    <InputSchema {...field} />
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="confirmPassword"
-                render={({ field }) => (
-                  <FormItem>
-                    <div className="flex items-center justify-between max-w-2xl">
-                      <FormLabel>Confirm Password</FormLabel>
-                    </div>
-                    <FormControl>
-                      <InputHide field={field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <SubmitButton
-                className="w-full"
-                pending={pending}
-                disabled={!isFormFilled}
-              >
-                Sign up
-              </SubmitButton>
-            </form>
-          </Form>
-        </CardContent>
-        <CardFooter>
-          <p className="text-xs font-medium text-slate-700">
-            Already have an account?
-          </p>
-          <Link className="text-sm font-bold ml-2" href="/sign-in">
-            Sign in
-          </Link>
-        </CardFooter>
-      </Card>
-    </>
+            <SubmitButton
+              className="w-full"
+              pending={pending}
+              disabled={!isFormFilled}
+            >
+              Sign up
+            </SubmitButton>
+          </form>
+        </Form>
+      </CardContent>
+      <CardFooter>
+        <p className="text-xs font-medium text-slate-700">
+          Already have an account?
+        </p>
+        <Link className="text-sm font-bold ml-2" href="/sign-in">
+          Sign in
+        </Link>
+      </CardFooter>
+    </Card>
   );
 }
