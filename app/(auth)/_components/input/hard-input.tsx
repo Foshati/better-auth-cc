@@ -9,6 +9,8 @@ type InputSchemaProps = {
   onBlur: () => void;
   name: string;
   ref: React.Ref<HTMLInputElement>;
+  variant?: "default" | "error" | "success"; // اضافه کردن این prop
+
 };
 
 export default function InputSchema({
@@ -17,6 +19,8 @@ export default function InputSchema({
   onBlur,
   name,
   ref,
+  variant = "default", // پیش‌فرض default
+
 }: InputSchemaProps) {
   const [password, setPassword] = useState(value);
   const [isVisible, setIsVisible] = useState<boolean>(false);
@@ -104,6 +108,7 @@ export default function InputSchema({
       <div className="space-y-2">
         <div className="relative">
           <Input
+          variant={variant}
             id="input-51"
             className="pe-9"
             placeholder="Password"

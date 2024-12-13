@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Control, Controller } from "react-hook-form";
 import { z } from "zod";
 import { signUpSchema } from "@/lib/auth-schema";
@@ -16,22 +16,17 @@ type EmailInputProps = {
 };
 
 export default function EmailInput({ control }: EmailInputProps) {
-  const [emailStatus, setEmailStatus] = useState<{
-    status: 'idle' | 'checking' | 'unique' | 'duplicate';
-    message: string;
-  }>({
-    status: 'idle',
+  const [emailStatus, setEmailStatus] = useState({
+    status: 'idle' as 'idle' | 'checking' | 'unique' | 'duplicate',
     message: '',
   });
 
-  const validateEmail = async (email: string) => {
-    // Only validate if email is not empty and looks like a valid email
+  const validateEmail = useCallback(async (email: string) => {
     if (!email || email.trim() === '') {
       setEmailStatus({ status: 'idle', message: '' });
       return;
     }
 
-    // Basic email format check
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setEmailStatus({ status: 'idle', message: '' });
@@ -41,37 +36,39 @@ export default function EmailInput({ control }: EmailInputProps) {
     setEmailStatus({ status: 'checking', message: '' });
 
     try {
-      const response = await fetch(`/api/validate-email?email=${encodeURIComponent(email)}`);
+      const response = await fetch(`/api/validate-email?email=${encodeURIComponent(email)}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
       const data = await response.json();
 
-      if (data.isUnique) {
-        setEmailStatus({ 
-          status: 'unique', 
-          message: 'Email is available' 
-        });
-      } else {
-        setEmailStatus({ 
-          status: 'duplicate', 
-          message: 'Email is already registered' 
-        });
-      }
+      setEmailStatus({
+        status: data.isUnique ? 'unique' : 'duplicate',
+        message: data.isUnique ? 'Email is available' : 'Email is already registered'
+      });
     } catch (error) {
-      setEmailStatus({ 
-        status: 'idle', 
-        message: 'Error checking email' 
+      setEmailStatus({
+        status: 'idle',
+        message: 'Error checking email'
       });
     }
-  };
+  }, []);
 
   return (
     <Controller
       control={control}
       name="email"
       render={({ field, fieldState: { error } }) => {
-        // Trigger email validation when field value changes
         useEffect(() => {
           validateEmail(field.value);
-        }, [field.value]);
+        }, [field.value, validateEmail]);
 
         return (
           <FormItem>

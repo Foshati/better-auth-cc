@@ -18,15 +18,31 @@ export default function NameInput({ control }: NameInputProps) {
     <Controller
       control={control}
       name="name"
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel>Name</FormLabel>
-          <FormControl>
-            <Input placeholder="Sam Foshati" {...field} />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )}
+      render={({ field, fieldState: { error, isTouched, isDirty } }) => {
+        const hasValue = field.value && field.value.trim() !== "";
+
+        const variant = !hasValue
+          ? "default" // Default state when input is empty
+          : error
+          ? "error" // Red border if there's a validation error
+          : isTouched && isDirty
+          ? "success" // Green border if value is valid
+          : "default";
+
+        return (
+          <FormItem>
+            <FormLabel>Name</FormLabel>
+            <FormControl>
+              <Input
+                placeholder="Sam Foshati"
+                {...field}
+                variant={variant} // Dynamically set the variant
+              />
+            </FormControl>
+            <FormMessage>{error?.message}</FormMessage>
+          </FormItem>
+        );
+      }}
     />
   );
 }

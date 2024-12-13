@@ -18,8 +18,6 @@ import UsernameInput from "./_components/UsernameInput";
 import EmailInput from "./_components/EmailInput";
 import PasswordInput from "./_components/PasswordInput";
 import ConfirmPasswordInput from "./_components/ConfirmPasswordInput";
-import AvatarUploader from "./_components/AvatarUploader";
-
 
 export default function SignUp() {
   const [pending, setPending] = useState(false);
@@ -33,23 +31,11 @@ export default function SignUp() {
       username: "",
       password: "",
       confirmPassword: "",
-      avatar: undefined, 
     },
+    mode: "onBlur", // Validate on blur for immediate feedback
   });
 
   const onSubmit = async (values: z.infer<typeof signUpSchema>) => {
-    const validationResult = signUpSchema.safeParse(values);
-
-    if (!validationResult.success) {
-      validationResult.error.errors.forEach((error) => {
-        form.setError(error.path[0] as keyof z.infer<typeof signUpSchema>, {
-          type: "manual",
-          message: error.message,
-        });
-      });
-      return;
-    }
-
     try {
       await authClient.signUp.email(
         {
@@ -57,7 +43,6 @@ export default function SignUp() {
           password: values.password,
           name: values.name,
           username: values.username,
-          avatar: values.avatar || undefined , // ارسال avatar اگر موجود باشد
         },
         {
           onRequest: () => {
@@ -163,12 +148,11 @@ export default function SignUp() {
             <EmailInput control={form.control} />
             <PasswordInput control={form.control} />
             <ConfirmPasswordInput control={form.control} />
-            <AvatarUploader control={form.control} /> {/* Avatar uploader component */}
 
             <SubmitButton
               className="w-full"
               pending={pending}
-              disabled={!isFormFilled}
+              disabled={!isFormFilled || !form.formState.isValid}
             >
               Sign up
             </SubmitButton>
