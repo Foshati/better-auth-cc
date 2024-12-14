@@ -1,16 +1,24 @@
+// /pages/sign-up.tsx
+
 "use client";
 
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useState } from "react";
+import Link from "next/link";
 
 import { Form } from "@/components/ui/form";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import Link from "next/link";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { authClient } from "@/lib/auth-client";
 import { useToast } from "@/hooks/use-toast";
 import { signUpSchema } from "@/lib/auth-schema";
-import { useState } from "react";
 
 import SubmitButton from "@/components/submitButton";
 import NameInput from "./_components/NameInput";
@@ -18,9 +26,12 @@ import UsernameInput from "./_components/UsernameInput";
 import EmailInput from "./_components/EmailInput";
 import PasswordInput from "./_components/PasswordInput";
 import ConfirmPasswordInput from "./_components/ConfirmPasswordInput";
+import ResendEmailButton from "./_components/ResendEmailButton"; // Import the ResendEmailButton component
+import SocialButtons from "../_components/button/socials-buttonts";
 
 export default function SignUp() {
   const [pending, setPending] = useState(false);
+  const [showResendButton, setShowResendButton] = useState(false); // New state
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof signUpSchema>>({
@@ -32,7 +43,7 @@ export default function SignUp() {
       password: "",
       confirmPassword: "",
     },
-    mode: "onBlur", // Validate on blur for immediate feedback
+    mode: "onBlur",
   });
 
   const onSubmit = async (values: z.infer<typeof signUpSchema>) => {
@@ -49,6 +60,7 @@ export default function SignUp() {
             setPending(true);
           },
           onSuccess: () => {
+            setShowResendButton(true); // Show resend button on successful submission
             toast({
               title: "Account created",
               description:
@@ -158,6 +170,12 @@ export default function SignUp() {
             </SubmitButton>
           </form>
         </Form>
+        {showResendButton && form.watch("email").trim() && (
+          <div className="flex flex-col">
+            <ResendEmailButton email={form.watch("email")} />
+            <SocialButtons />
+          </div>
+        )}
       </CardContent>
       <CardFooter>
         <p className="text-xs font-medium text-slate-700">
