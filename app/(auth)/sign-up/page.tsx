@@ -1,5 +1,4 @@
-// /pages/sign-up.tsx
-
+// pages/sign-up.tsx
 "use client";
 
 import { z } from "zod";
@@ -26,12 +25,11 @@ import UsernameInput from "./_components/UsernameInput";
 import EmailInput from "./_components/EmailInput";
 import PasswordInput from "./_components/PasswordInput";
 import ConfirmPasswordInput from "./_components/ConfirmPasswordInput";
-import ResendEmailButton from "./_components/ResendEmailButton"; // Import the ResendEmailButton component
 import SocialButtons from "../_components/button/socials-buttonts";
 
 export default function SignUp() {
   const [pending, setPending] = useState(false);
-  const [showResendButton, setShowResendButton] = useState(false); // New state
+  const [showResendButton, setShowResendButton] = useState(false);
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof signUpSchema>>({
@@ -60,11 +58,10 @@ export default function SignUp() {
             setPending(true);
           },
           onSuccess: () => {
-            setShowResendButton(true); // Show resend button on successful submission
+            setShowResendButton(true);
             toast({
-              title: "Account created",
-              description:
-                "Your account has been created. Check your email for a verification link.",
+              title: "Account Created",
+              description: "Check your email for a verification link.",
             });
           },
           onError: (ctx) => {
@@ -171,8 +168,7 @@ export default function SignUp() {
           </form>
         </Form>
         {showResendButton && form.watch("email").trim() && (
-          <div className="flex flex-col">
-            <ResendEmailButton email={form.watch("email")} />
+          <div className="flex flex-col mt-4">
             <SocialButtons />
           </div>
         )}

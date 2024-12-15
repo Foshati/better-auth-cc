@@ -42,6 +42,7 @@ export default function SignIn() {
       email: "",
       password: "",
     },
+    mode: "onChange", // Validate on every change
   });
 
   const handleCredentialsSignIn = async (
@@ -73,7 +74,8 @@ export default function SignIn() {
     setPendingCredentials(false);
   };
 
-  const isFormFilled = form.watch("email").trim() !== "" && form.watch("password").trim() !== "";
+  const isFormFilled =
+    form.watch("email").trim() !== "" && form.watch("password").trim() !== "";
 
   return (
     <>
@@ -91,15 +93,23 @@ export default function SignIn() {
                 control={form.control}
                 name="email"
                 render={({ field }) => {
+                  const hasValue = field.value && field.value.trim() !== "";
                   const error = form.formState.errors.email;
+
+                  const variant = !hasValue
+                    ? "default"
+                    : error
+                    ? "error"
+                    : "success";
+
                   return (
                     <FormItem>
                       <FormLabel>Email</FormLabel>
                       <FormControl>
                         <Input
-                          {...field}
-                          variant={error ? "error" : form.formState.touchedFields.email ? "success" : "default"}
                           placeholder="foshatia@gmail.com"
+                          {...field}
+                          variant={variant}
                         />
                       </FormControl>
                       <FormMessage />
@@ -110,31 +120,25 @@ export default function SignIn() {
               <FormField
                 control={form.control}
                 name="password"
-                render={({ field }) => {
-                  const error = form.formState.errors.password;
-                  return (
-                    <FormItem>
-                      <div className="flex items-center justify-between max-w-2xl">
-                        <FormLabel>Password</FormLabel>
-                        <span>
-                          <Link
-                            className="text-[10px] font-thin text-slate-900 hover:text-yellow-500"
-                            href="/forgot-password"
-                          >
-                            Forgot password
-                          </Link>
-                        </span>
-                      </div>
-                      <FormControl>
-                        <InputHide
-                          field={field}
-                          variant={error ? "error" : form.formState.touchedFields.password ? "success" : "default"}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  );
-                }}
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex items-center justify-between max-w-2xl">
+                      <FormLabel>Password</FormLabel>
+                      <span>
+                        <Link
+                          className="text-[10px] font-thin text-slate-900 hover:text-yellow-500"
+                          href="/forgot-password"
+                        >
+                          Forgot password
+                        </Link>
+                      </span>
+                    </div>
+                    <FormControl>
+                      <InputHide field={field}      variant={variant}/>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
               <SubmitButton
                 className="w-full"
