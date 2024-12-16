@@ -34,6 +34,7 @@ function ResetPasswordContent() {
       password: "",
       confirmPassword: "",
     },
+    mode: "onChange",
   });
 
   const onSubmit = async (data: z.infer<typeof resetPasswordSchema>) => {
@@ -96,33 +97,45 @@ function ResetPasswordContent() {
               <FormField
                 control={form.control}
                 name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <div className="flex items-center justify-between max-w-2xl">
-                      <FormLabel>password</FormLabel>
-                    </div>
-                    <FormControl>
-                      <InputHide field={field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                render={({ field }) => {
+                  const hasValue = field.value && field.value.trim() !== "";
+                  const error = form.formState.errors.password;
+                  const variant = !hasValue ? "default" : error ? "error" : "success";
+
+                  return (
+                    <FormItem>
+                      <div className="flex items-center justify-between max-w-2xl">
+                        <FormLabel>Password</FormLabel>
+                      </div>
+                      <FormControl>
+                        <InputHide field={field} variant={variant} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
               />
 
               <FormField
                 control={form.control}
                 name="confirmPassword"
-                render={({ field }) => (
-                  <FormItem>
-                    <div className="flex items-center justify-between max-w-2xl">
-                      <FormLabel>confirmPassword</FormLabel>
-                    </div>
-                    <FormControl>
-                      <InputHide field={field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                render={({ field }) => {
+                  const hasValue = field.value && field.value.trim() !== "";
+                  const error = form.formState.errors.confirmPassword;
+                  const variant = !hasValue ? "default" : error ? "error" : "success";
+
+                  return (
+                    <FormItem>
+                      <div className="flex items-center justify-between max-w-2xl">
+                        <FormLabel>Confirm Password</FormLabel>
+                      </div>
+                      <FormControl>
+                        <InputHide field={field} variant={variant} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
               />
 
               <SubmitButton pending={isPending} disabled={!isFormFilled} className="w-full">

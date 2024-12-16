@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -28,6 +27,7 @@ export default function ForgotPassword() {
     defaultValues: {
       email: "",
     },
+    mode: "onChange",
   });
 
   const onSubmit = async (data: z.infer<typeof forgotPasswordSchema>) => {
@@ -69,22 +69,33 @@ export default function ForgotPassword() {
               <FormField
                 control={form.control}
                 name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="email"
-                        placeholder="Enter your email"
-                        {...field}
-                        autoComplete="email"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                render={({ field }) => {
+                  const hasValue = field.value && field.value.trim() !== "";
+                  const error = form.formState.errors.email;
+                  const variant = !hasValue ? "default" : error ? "error" : "success";
+
+                  return (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="email"
+                          placeholder="Enter your email"
+                          {...field}
+                          autoComplete="email"
+                          variant={variant}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
               />
-              <SubmitButton pending={isPending} disabled={!isFormFilled} className="w-full">
+              <SubmitButton 
+                pending={isPending} 
+                disabled={!isFormFilled} 
+                className="w-full"
+              >
                 Send Reset Link
               </SubmitButton>
             </form>
