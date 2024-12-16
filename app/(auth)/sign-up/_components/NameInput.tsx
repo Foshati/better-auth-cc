@@ -16,18 +16,12 @@ type NameInputProps = {
 export default function NameInput({ control }: NameInputProps) {
   return (
     <Controller
-      control={control}
-      name="name"
-      render={({ field, fieldState: { error, isTouched, isDirty } }) => {
-        const hasValue = field.value && field.value.trim() !== "";
-
-        const variant = !hasValue
-          ? "default" // Default state when input is empty
-          : error
-          ? "error" // Red border if there's a validation error
-          : isTouched && isDirty
-          ? "success" // Green border if value is valid
-          : "default";
+    control={control}
+    name="name"
+    render={({ field }) => {
+      const hasValue = field.value && field.value.trim() !== "";
+      const error = control._formState.errors.name;
+      const variant = !hasValue ? "default" : error ? "error" : "success";
 
         return (
           <FormItem>

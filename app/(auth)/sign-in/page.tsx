@@ -4,14 +4,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form } from "@/components/ui/form";
 import {
   Card,
   CardContent,
@@ -21,7 +14,6 @@ import {
 } from "@/components/ui/card";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
-import { Input } from "@/components/ui/input";
 import SocialButtons from "@/app/(auth)/_components/button/socials-buttonts";
 import { signInSchema } from "@/lib/auth-schema";
 import { useState } from "react";
@@ -29,7 +21,8 @@ import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { ErrorContext } from "@better-fetch/fetch";
 import SubmitButton from "@/components/submitButton";
-import InputHide from "../_components/input/hide-input";
+import { PasswordInput } from "./_components/PasswordInput";
+import { EmailInput } from "./_components/EmailInput";
 
 export default function SignIn() {
   const router = useRouter();
@@ -89,72 +82,10 @@ export default function SignIn() {
               onSubmit={form.handleSubmit(handleCredentialsSignIn)}
               className="space-y-6"
             >
+              <EmailInput control={form.control} />
 
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => {
-                  const hasValue = field.value && field.value.trim() !== "";
-                  const error = form.formState.errors.email;
+              <PasswordInput control={form.control} />
 
-                  const variant = !hasValue
-                    ? "default"
-                    : error
-                    ? "error"
-                    : "success";
-
-                  return (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="foshatia@gmail.com"
-                          {...field}
-                          variant={variant}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  );
-                }}
-              />
-
-<FormField
-  control={form.control}
-  name="password"
-  render={({ field }) => {    
-    const hasValue = field.value && field.value.trim() !== ""; // بررسی پر بودن فیلد
-    const error = form.formState.errors.password; // بررسی وجود خطای اعتبارسنجی مرتبط با password
-
-    const variant = !hasValue
-      ? "default" // اگر مقدار وارد نشده باشد، استایل پیش‌فرض
-      : error
-      ? "error" // اگر خطا وجود داشته باشد، استایل خطا
-      : "success"; // اگر ورودی صحیح باشد، استایل موفقیت
-
-    return (
-      <FormItem>
-        <div className="flex items-center justify-between max-w-2xl">
-          <FormLabel>Password</FormLabel>
-          <span>
-            <Link
-              className="text-[10px] font-thin text-slate-900 hover:text-yellow-500"
-              href="/forgot-password"
-            >
-              Forgot password
-            </Link>
-          </span>
-        </div>
-        <FormControl>
-          <InputHide field={field} variant={variant} />
-        </FormControl>
-        <FormMessage />
-      </FormItem>
-    );
-  }}
-/>
-
-              
               <SubmitButton
                 className="w-full"
                 pending={pendingCredentials}
@@ -171,9 +102,7 @@ export default function SignIn() {
             <hr className="border-t-2 border-gray-300 flex-1" />
           </div>
 
-          <div className="mt-2">
-            <SocialButtons />
-          </div>
+          <SocialButtons />
         </CardContent>
         <CardFooter>
           <p className="text-xs font-medium text-slate-700">

@@ -18,17 +18,10 @@ export default function PasswordInput({ control }: PasswordInputProps) {
     <Controller
       control={control}
       name="password"
-      render={({ field, fieldState: { error, isTouched, isDirty } }) => {
+      render={({ field }) => {
         const hasValue = field.value && field.value.trim() !== "";
-
-        const variant = !hasValue
-          ? "default" // Default state when input is empty
-          : error
-          ? "error" // Red border if there's a validation error
-          : isTouched && isDirty
-          ? "success" // Green border if value is valid
-          : "default";
-
+        const error = control._formState.errors.password;
+        const variant = !hasValue ? "default" : error ? "error" : "success";
         return (
           <FormItem>
             <FormLabel>Password</FormLabel>

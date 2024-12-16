@@ -9,54 +9,47 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import { Check, X } from "lucide-react";
+import { Check, X, LoaderCircle } from "lucide-react";
 
 type EmailInputProps = {
   control: Control<z.infer<typeof signUpSchema>>;
 };
 
 export default function EmailInput({ control }: EmailInputProps) {
-  const [emailStatus, setEmailStatus] = useState({
-    status: 'idle' as 'idle' | 'checking' | 'unique' | 'duplicate',
-    message: '',
+  const [emailStatus, setEmailStatus] = useState<{
+    status: "idle" | "checking" | "unique" | "duplicate";
+    message: string;
+  }>({
+    status: "idle",
+    message: "",
   });
 
   const validateEmail = useCallback(async (email: string) => {
-    if (!email || email.trim() === '') {
-      setEmailStatus({ status: 'idle', message: '' });
+    if (!email || email.trim() === "") {
+      setEmailStatus({ status: "idle", message: "" });
       return;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      setEmailStatus({ status: 'idle', message: '' });
+      setEmailStatus({ status: "idle", message: "" });
       return;
     }
 
-    setEmailStatus({ status: 'checking', message: '' });
+    setEmailStatus({ status: "checking", message: "" });
 
     try {
-      const response = await fetch(`/api/validate-email?email=${encodeURIComponent(email)}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-
+      const response = await fetch(`/api/validate-email?email=${encodeURIComponent(email)}`);
       const data = await response.json();
 
       setEmailStatus({
-        status: data.isUnique ? 'unique' : 'duplicate',
-        message: data.isUnique ? 'Email is available' : 'Email is already registered'
+        status: data.isUnique ? "unique" : "duplicate",
+        message: data.isUnique ? "Email is available" : "Email is already registered"
       });
     } catch (error) {
       setEmailStatus({
-        status: 'idle',
-        message: 'Error checking email'
+        status: "idle",
+        message: "Error checking email"
       });
     }
   }, []);
@@ -65,42 +58,48 @@ export default function EmailInput({ control }: EmailInputProps) {
     <Controller
       control={control}
       name="email"
-      render={({ field, fieldState: { error } }) => {
+      render={({ field }) => {
         useEffect(() => {
           validateEmail(field.value);
         }, [field.value, validateEmail]);
+
+        const hasValue = field.value && field.value.trim() !== "";
+        const error = control._formState.errors.email;
+        const isFullyValid = emailStatus.status === "unique" && !error;
 
         return (
           <FormItem>
             <FormLabel>Email</FormLabel>
             <FormControl className="relative">
               <div className="flex items-center">
-                <Input 
-                  placeholder="foshatia@gmail.com" 
-                  {...field} 
-                  className={`pr-10 ${
-                    emailStatus.status === 'duplicate' 
-                    ? 'border-red-500' 
-                    : emailStatus.status === 'unique' 
-                    ? 'border-green-500' 
-                    : ''
-                  }`}
+                <Input
+                  placeholder="example@gmail.com"
+                  {...field}
+                  variant={!hasValue ? "default" : error ? "error" : "success"}
+                  className={`pr-10 
+                    ${isFullyValid ? 'border-green-500' : ''}
+                    ${emailStatus.status === "duplicate" ? 'border-red-500' : ''}
+                    ${emailStatus.status === "checking" ? 'border-yellow-500' : ''}
+                  `}
                 />
-                {emailStatus.status === 'unique' && (
-                  <Check 
-                    className="absolute right-2 text-green-500" 
-                    size={20} 
+                {isFullyValid && (
+                  <Check
+                    className="absolute right-2 text-green-500"
+                    size={20}
                   />
                 )}
-                {emailStatus.status === 'duplicate' && (
-                  <X 
-                    className="absolute right-2 text-red-500" 
+                {emailStatus.status === "duplicate" && (
+                  <X className="absolute right-2 text-red-500" size={20} />
+                )}
+                {emailStatus.status === "checking" && (
+                  <LoaderCircle 
+                    className="absolute right-2 text-yellow-500 animate-spin" 
                     size={20} 
                   />
                 )}
               </div>
             </FormControl>
-            {emailStatus.status === 'duplicate' && (
+            {emailStatus.status === "duplicate" && (
               <FormMessage className="text-red-500">
                 {emailStatus.message}
               </FormMessage>

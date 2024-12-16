@@ -16,18 +16,13 @@ type ConfirmPasswordInputProps = {
 export default function ConfirmPasswordInput({ control }: ConfirmPasswordInputProps) {
   return (
     <Controller
-      control={control}
-      name="confirmPassword"
-      render={({ field, fieldState: { error, isTouched, isDirty } }) => {
-        const hasValue = field.value && field.value.trim() !== "";
+    control={control}
+    name="confirmPassword"
+    render={({ field }) => {
+      const hasValue = field.value && field.value.trim() !== "";
+      const error = control._formState.errors.confirmPassword;
+      const variant = !hasValue ? "default" : error ? "error" : "success";
 
-        const variant = !hasValue
-          ? "default" // Keep default when input is empty
-          : error
-          ? "error" // Red border when schema validation fails
-          : isTouched && isDirty
-          ? "success" // Green border when validation passes
-          : "default";
 
         return (
           <FormItem>

@@ -9,7 +9,7 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import { Check, X, RefreshCw } from "lucide-react";
+import { Check, X, RefreshCw, LoaderCircle } from "lucide-react";
 
 type UsernameInputProps = {
   control: Control<z.infer<typeof signUpSchema>>;
@@ -81,10 +81,14 @@ export default function UsernameInput({ control }: UsernameInputProps) {
     <Controller
       control={control}
       name="username"
-      render={({ field, fieldState: { error } }) => {
+      render={({ field }) => {
         useEffect(() => {
           validateUsername(field.value);
         }, [field.value]);
+
+        const hasValue = field.value && field.value.trim() !== "";
+        const error = control._formState.errors.username;
+        const isFullyValid = usernameStatus.status === "unique" && !error;
 
         return (
           <FormItem>
@@ -94,13 +98,12 @@ export default function UsernameInput({ control }: UsernameInputProps) {
                 <Input
                   placeholder="@username"
                   {...field}
-                  className={`pr-10 ${
-                    usernameStatus.status === "duplicate"
-                      ? "border-red-500"
-                      : usernameStatus.status === "unique"
-                      ? "border-green-500"
-                      : ""
-                  }`}
+                  variant={!hasValue ? "default" : error ? "error" : "success"}
+                  className={`pr-10 
+                    ${isFullyValid ? 'border-green-500' : ''}
+                    ${usernameStatus.status === "duplicate" ? 'border-red-500' : ''}
+                    ${usernameStatus.status === "checking" ? 'border-yellow-500' : ''}
+                  `}
                   onChange={(e) => {
                     const value = e.target.value;
                     field.onChange(
@@ -110,7 +113,7 @@ export default function UsernameInput({ control }: UsernameInputProps) {
                 />
                 <button
                   type="button"
-                  className="absolute right-11 text-gray-500 hover:text-black disabled:text-gray-300 "
+                  className="absolute right-11 text-gray-500 hover:text-black disabled:text-gray-300"
                   onClick={() => generateUsernames(name || "user")}
                   disabled={!name || isGenerating}
                 >
@@ -119,7 +122,7 @@ export default function UsernameInput({ control }: UsernameInputProps) {
                     className={isGenerating ? "animate-spin" : ""}
                   />
                 </button>
-                {usernameStatus.status === "unique" && (
+                {isFullyValid && (
                   <Check
                     className="absolute right-2 text-green-500"
                     size={20}
@@ -127,6 +130,12 @@ export default function UsernameInput({ control }: UsernameInputProps) {
                 )}
                 {usernameStatus.status === "duplicate" && (
                   <X className="absolute right-2 text-red-500" size={20} />
+                )}
+                {usernameStatus.status === "checking" && (
+                  <LoaderCircle 
+                    className="absolute right-2 text-yellow-500 animate-spin" 
+                    size={20} 
+                  />
                 )}
               </div>
             </FormControl>
