@@ -168,9 +168,17 @@ export default function SignUp() {
           </form>
         </Form>
         {showResendButton && form.watch("email").trim() && (
-          <div className="flex flex-col mt-4">
-            <SocialButtons />
-          </div>
+          <>
+            <div className="flex items-center justify-center my-6">
+              <hr className="border-t-2 border-gray-300 flex-1" />
+              <span className="mx-4 text-gray-600 text-[10px]">or</span>
+              <hr className="border-t-2 border-gray-300 flex-1" />
+            </div>
+
+            <div className="flex flex-col mt-4">
+              <SocialButtons />
+            </div>
+          </>
         )}
       </CardContent>
       <CardFooter>
