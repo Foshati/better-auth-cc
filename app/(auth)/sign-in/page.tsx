@@ -89,6 +89,7 @@ export default function SignIn() {
               onSubmit={form.handleSubmit(handleCredentialsSignIn)}
               className="space-y-6"
             >
+
               <FormField
                 control={form.control}
                 name="email"
@@ -117,29 +118,43 @@ export default function SignIn() {
                   );
                 }}
               />
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <div className="flex items-center justify-between max-w-2xl">
-                      <FormLabel>Password</FormLabel>
-                      <span>
-                        <Link
-                          className="text-[10px] font-thin text-slate-900 hover:text-yellow-500"
-                          href="/forgot-password"
-                        >
-                          Forgot password
-                        </Link>
-                      </span>
-                    </div>
-                    <FormControl>
-                      <InputHide field={field}      variant={variant}/>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+
+<FormField
+  control={form.control}
+  name="password"
+  render={({ field }) => {    
+    const hasValue = field.value && field.value.trim() !== ""; // بررسی پر بودن فیلد
+    const error = form.formState.errors.password; // بررسی وجود خطای اعتبارسنجی مرتبط با password
+
+    const variant = !hasValue
+      ? "default" // اگر مقدار وارد نشده باشد، استایل پیش‌فرض
+      : error
+      ? "error" // اگر خطا وجود داشته باشد، استایل خطا
+      : "success"; // اگر ورودی صحیح باشد، استایل موفقیت
+
+    return (
+      <FormItem>
+        <div className="flex items-center justify-between max-w-2xl">
+          <FormLabel>Password</FormLabel>
+          <span>
+            <Link
+              className="text-[10px] font-thin text-slate-900 hover:text-yellow-500"
+              href="/forgot-password"
+            >
+              Forgot password
+            </Link>
+          </span>
+        </div>
+        <FormControl>
+          <InputHide field={field} variant={variant} />
+        </FormControl>
+        <FormMessage />
+      </FormItem>
+    );
+  }}
+/>
+
+              
               <SubmitButton
                 className="w-full"
                 pending={pendingCredentials}

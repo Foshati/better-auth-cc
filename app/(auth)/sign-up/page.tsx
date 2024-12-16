@@ -41,7 +41,7 @@ export default function SignUp() {
       password: "",
       confirmPassword: "",
     },
-    mode: "onBlur",
+    mode: "onChange",
   });
 
   const onSubmit = async (values: z.infer<typeof signUpSchema>) => {
