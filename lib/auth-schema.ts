@@ -1,9 +1,5 @@
 import { z } from "zod";
 
-
-
-
-
 const getPasswordSchema = (type: "password" | "confirmPassword") =>
   z
     .string({ required_error: `${type} is required` })
@@ -37,9 +33,9 @@ const getUsernameSchema = () =>
     .string({ required_error: "Username is required" })
     .trim()
     .min(5, "Username must be at least 5 characters long")
-    .max(21, "Username must be less than 21 characters")
-
+    .max(21, "Username must be less than 21 characters");
     
+
 export const signUpSchema = z
   .object({
     name: getNameSchema(),
@@ -47,6 +43,10 @@ export const signUpSchema = z
     username: getUsernameSchema(),
     password: getPasswordSchema("password"),
     confirmPassword: getPasswordSchema("confirmPassword"),
+    image: z
+      .instanceof(File)
+      .optional()
+      .transform((val) => (val && val.size > 0 ? val : undefined)),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",

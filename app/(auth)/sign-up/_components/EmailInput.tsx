@@ -1,15 +1,11 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { Control, Controller } from "react-hook-form";
-import { z } from "zod";
-import { signUpSchema } from "@/lib/auth-schema";
-import { Input } from "@/components/ui/input";
-import {
-  FormItem,
-  FormLabel,
-  FormControl,
-  FormMessage,
-} from "@/components/ui/form";
-import { Check, X, LoaderCircle } from "lucide-react";
+import { Check, LoaderCircle, X } from 'lucide-react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Control, Controller } from 'react-hook-form';
+import { z } from 'zod';
+
+import { Input } from '@/components/ui/input';
+import { FormControl, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { signUpSchema } from '@/lib/auth-schema';
 
 type EmailInputProps = {
   control: Control<z.infer<typeof signUpSchema>>;

@@ -1,28 +1,23 @@
 "use client";
 
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 
-import { Form } from "@/components/ui/form";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import Link from "next/link";
-import { authClient } from "@/lib/auth-client";
-import SocialButtons from "@/app/(auth)/_components/button/socials-buttonts";
-import { signInSchema } from "@/lib/auth-schema";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { useToast } from "@/hooks/use-toast";
-import { ErrorContext } from "@better-fetch/fetch";
-import SubmitButton from "@/components/submitButton";
-import { PasswordInput } from "./_components/PasswordInput";
-import { EmailInput } from "./_components/EmailInput";
+import SocialButtons from '@/app/(auth)/_components/button/socials-buttonts';
+import SubmitButton from '@/components/submitButton';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Form } from '@/components/ui/form';
+import { useToast } from '@/hooks/use-toast';
+import { authClient } from '@/lib/auth-client';
+
+import { ErrorContext } from '@better-fetch/fetch';
+import { zodResolver } from '@hookform/resolvers/zod';
+
+import { EmailInput , PasswordInput } from './_components';
+import { signInSchema } from '@/lib/auth-schema';
 
 export default function SignIn() {
   const router = useRouter();

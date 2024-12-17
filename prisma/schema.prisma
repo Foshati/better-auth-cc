@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -27,8 +26,8 @@ model User {
 
   username String?
 
-  @@map("user")
   @@unique([username])
+  @@map("user")
 }
 
 model Session {
