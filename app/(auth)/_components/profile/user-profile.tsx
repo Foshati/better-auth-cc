@@ -13,24 +13,23 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 import SignoutButton from "../button/signout-button";
+import { currentUser } from "@/lib/helper/currentUser";
 
-export const UserProfile = async() => {
-    const session = await auth.api.getSession({
-        headers: await headers(),
-      });
-    
-      // Function to get initials from name
-      const getInitials = (name?: string) => {
-        if (!name) return "UN";
-        const names = name.split(" ");
-        return names
-          .map((n) => n[0].toUpperCase())
-          .slice(0, 2)
-          .join("");
-      };
+export const UserProfile = async () => {
+  const user = await currentUser();
+
+  // Function to get initials from name
+  const getInitials = (name?: string) => {
+    if (!name) return "UN";
+    const names = name.split(" ");
+    return names
+      .map((n) => n[0].toUpperCase())
+      .slice(0, 2)
+      .join("");
+  };
   return (
     <div>
-         {!session ? (
+      {!user ? (
         <div className="flex gap-2 justify-center">
           <Link href="/sign-in" className="text-lg">
             <Fingerprint />
@@ -42,12 +41,10 @@ export const UserProfile = async() => {
             <Button variant="ghost" className="rounded-full p-0 focus:ring-2">
               <Avatar className="w-8 h-8">
                 <AvatarImage
-                  src={session.user?.image || undefined}
-                  alt={session.user?.name || "User Profile"}
+                  src={user?.image || undefined}
+                  alt={user?.name || "User Profile"}
                 />
-                <AvatarFallback>
-                  {getInitials(session.user?.name)}
-                </AvatarFallback>
+                <AvatarFallback>{getInitials(user?.name)}</AvatarFallback>
               </Avatar>
             </Button>
           </DropdownMenuTrigger>
@@ -56,26 +53,23 @@ export const UserProfile = async() => {
               <div className="flex items-center space-x-2">
                 <Avatar className="w-10 h-10">
                   <AvatarImage
-                    src={session.user?.image || undefined}
-                    alt={session.user?.name || "User Profile"}
+                    src={user?.image || undefined}
+                    alt={user?.name || "User Profile"}
                   />
-                  <AvatarFallback>
-                    {getInitials(session.user?.name)}
-                  </AvatarFallback>
+                  <AvatarFallback>{getInitials(user?.name)}</AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col">
-                  <span className="font-medium">{session.user?.name}</span>
+                  <span className="font-medium">{user?.name}</span>
                   <span className="text-xs text-muted-foreground">
-                    {session.user?.email}
+                    {user?.email}
                   </span>
-              
                 </div>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
               <User className="mr-2 h-4 w-4" />
-              <span>Profile</span>
+              <Link href="/dashboard">Profile</Link>
             </DropdownMenuItem>
             <DropdownMenuItem>
               <Settings className="mr-2 h-4 w-4" />
@@ -89,5 +83,5 @@ export const UserProfile = async() => {
         </DropdownMenu>
       )}
     </div>
-  )
-}
+  );
+};

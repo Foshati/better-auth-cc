@@ -34,7 +34,6 @@ const getUsernameSchema = () =>
     .trim()
     .min(5, "Username must be at least 5 characters long")
     .max(21, "Username must be less than 21 characters");
-    
 
 export const signUpSchema = z
   .object({
@@ -43,10 +42,6 @@ export const signUpSchema = z
     username: getUsernameSchema(),
     password: getPasswordSchema("password"),
     confirmPassword: getPasswordSchema("confirmPassword"),
-    image: z
-      .instanceof(File)
-      .optional()
-      .transform((val) => (val && val.size > 0 ? val : undefined)),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",

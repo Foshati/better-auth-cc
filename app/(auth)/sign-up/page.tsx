@@ -19,8 +19,6 @@ import EmailInput from './_components/EmailInput';
 import NameInput from './_components/NameInput';
 import PasswordInput from './_components/PasswordInput';
 import UsernameInput from './_components/UsernameInput';
-import AvatarInput from './_components/AvatarInput';
-
 
 export default function SignUp() {
   const [pending, setPending] = useState(false);
@@ -35,32 +33,20 @@ export default function SignUp() {
       username: "",
       password: "",
       confirmPassword: "",
-      image: undefined,
     },
     mode: "onChange",
   });
 
   const onSubmit = async (values: z.infer<typeof signUpSchema>) => {
     try {
-      // Create form data to handle file upload
-      const formData = new FormData();
-      formData.append('email', values.email);
-      formData.append('password', values.password);
-      formData.append('name', values.name);
-      formData.append('username', values.username);
-      
-      // Append image if it exists
-      if (values.image) {
-        formData.append('image', values.image);
-      }
+      const signupData = {
+        email: values.email,
+        password: values.password,
+        name: values.name,
+        username: values.username,
+      };
 
-      // Convert FormData to an object for better-auth
-      const signupData: Record<string, string | File | undefined> = {};
-      formData.forEach((value, key) => {
-        signupData[key] = value;
-      });
-
-      await authClient.signUp.email(signupData as any, {
+      await authClient.signUp.email(signupData, {
         onRequest: () => {
           setPending(true);
         },
@@ -157,7 +143,6 @@ export default function SignUp() {
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <AvatarInput control={form.control} />
             <NameInput control={form.control} />
             <UsernameInput control={form.control} />
             <EmailInput control={form.control} />
