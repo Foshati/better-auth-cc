@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 import SubmitButton from '@/components/submitButton';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -11,7 +12,6 @@ import { Form } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
 import { authClient } from '@/lib/auth-client';
 import { signUpSchema } from '@/lib/auth-schema';
-import { zodResolver } from '@hookform/resolvers/zod';
 
 import SocialButtons from '../_components/button/socials-buttonts';
 import ConfirmPasswordInput from './_components/ConfirmPasswordInput';
@@ -20,6 +20,7 @@ import NameInput from './_components/NameInput';
 import PasswordInput from './_components/PasswordInput';
 import UsernameInput from './_components/UsernameInput';
 import AvatarInput from './_components/AvatarInput';
+
 
 export default function SignUp() {
   const [pending, setPending] = useState(false);
@@ -156,8 +157,8 @@ export default function SignUp() {
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <AvatarInput control={form.control} />
-          <NameInput control={form.control} />
+            <AvatarInput control={form.control} />
+            <NameInput control={form.control} />
             <UsernameInput control={form.control} />
             <EmailInput control={form.control} />
             <PasswordInput control={form.control} />
