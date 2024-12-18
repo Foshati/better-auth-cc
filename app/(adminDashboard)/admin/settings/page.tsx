@@ -1,5 +1,9 @@
+import ChooseTheme from "@/components/ChooseTheme";
+
 export default function page() {
   return (
-    <div>settings page</div>
-  )
+    <div >
+      <ChooseTheme />
+    </div>
+  );
 }
