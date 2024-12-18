@@ -18,9 +18,6 @@ import {
 import {
   InfoIcon,
   MenuIcon,
-  MoonIcon,
-  MountainIcon,
-  Phone,
   SearchIcon,
 } from "lucide-react";
 import { UserProfile } from "@/app/(auth)/_components/profile/user-profile";

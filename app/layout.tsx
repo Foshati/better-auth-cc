@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import "./globals.css";
-import Navbar from "@/components/layout/navbar";
+import "@/style/globals.css";
+
 import { Toaster } from "@/components/ui/toaster";
 import { Lexend } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -30,7 +30,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-        <Navbar />
+
         {children}
         <Toaster />
         </ThemeProvider>
