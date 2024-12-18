@@ -74,10 +74,12 @@ export const UserProfile = async () => {
               </DropdownMenuItem>
             </Link>
 
-            <DropdownMenuItem>
-              <Settings className="mr-2 h-4 w-4" />
-              <span>Settings</span>
-            </DropdownMenuItem>
+            <Link href="/dashboard/settings" >
+              <DropdownMenuItem>
+                <Settings className="mr-2 h-4 w-4" />
+                <span>settings</span>
+              </DropdownMenuItem>
+            </Link>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
               <SignoutButton />
