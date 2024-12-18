@@ -1,26 +1,16 @@
-import UsersTable from "@/app/(auth)/_components/admin/users-table";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { currentUser } from "@/lib/helper/currentUser";
 
-export default async function AdminDashboard() {
+export default async function DashboardPage() {
+  const user = await currentUser();
   return (
-    <main className="flex flex-col">
-      <div className="flex flex-col gap-4 max-w-7xl mx-auto w-full">
-        <div className="flex flex-col gap-2 mb-8">
-          <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-          <p className="text-muted-foreground">
-            Manage users and view system statistics
-          </p>
-        </div>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Users</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <UsersTable />
-          </CardContent>
-        </Card>
-      </div>
-    </main>
+    <div className="mt-10 text-center">
+      <h1 className="text-2xl font-bold underline">Welcome to the admin dashboard</h1>
+      <ul>
+        <li>Name: {user?.name}</li>
+        <li>username: {user?.username}</li>
+        <li>Email: {user?.email}</li>
+        <li>role: {user?.role}</li>
+      </ul>
+    </div>
   );
 }
