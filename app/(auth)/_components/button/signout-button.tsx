@@ -2,9 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { authClient } from "@/lib/auth-client";
+import { authClient } from "@/app/(auth)/_lib/auth-client";
 import { LogOut } from "lucide-react";
-import SubmitButton from "@/components/submitButton";
+import SubmitButton from "@/app/(auth)/_components/button/submit-button";
 
 export default function SignoutButton() {
   const router = useRouter();

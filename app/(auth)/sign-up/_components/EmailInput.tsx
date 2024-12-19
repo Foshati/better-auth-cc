@@ -3,9 +3,9 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Control, Controller } from 'react-hook-form';
 import { z } from 'zod';
 
-import { Input } from '@/components/ui/input';
+import { Input } from '@/app/(auth)/_components/input/auth-input';
 import { FormControl, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { signUpSchema } from '@/lib/auth-schema';
+import { signUpSchema } from '@/app/(auth)/_lib/auth-schema';
 
 type EmailInputProps = {
   control: Control<z.infer<typeof signUpSchema>>;

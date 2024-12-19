@@ -7,7 +7,7 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/app/(auth)/_components/input/auth-input";
 
 export function EmailInput({ control }: { control: any }) {
   return (

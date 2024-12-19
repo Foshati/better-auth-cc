@@ -1,6 +1,6 @@
 import { betterAuth, BetterAuthOptions } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
-import prisma from "./prisma";
+import prisma from "../../../lib/prisma";
 import { sendEmail } from "@/app/(auth)/_actions/email";
 import { openAPI } from "better-auth/plugins";
 import { admin } from "better-auth/plugins";

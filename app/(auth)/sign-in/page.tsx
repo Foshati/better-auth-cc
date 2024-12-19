@@ -7,17 +7,17 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import SocialButtons from '@/app/(auth)/_components/button/socials-buttonts';
-import SubmitButton from '@/components/submitButton';
+import SubmitButton from '@/app/(auth)/_components/button/submit-button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
-import { authClient } from '@/lib/auth-client';
+import { authClient } from '@/app/(auth)/_lib/auth-client';
 
 import { ErrorContext } from '@better-fetch/fetch';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { EmailInput , PasswordInput } from './_components';
-import { signInSchema } from '@/lib/auth-schema';
+import { signInSchema } from '@/app/(auth)/_lib/auth-schema';
 
 export default function SignIn() {
   const router = useRouter();

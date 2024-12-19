@@ -11,7 +11,7 @@ import {
 import { User } from "@prisma/client";
 import { useState, useEffect } from "react";
 import ImpersonateUser from "./user-impersonate";
-import { authClient } from "@/lib/auth-client";
+import { authClient } from "@/app/(auth)/_lib/auth-client";
 
 export default function UsersTable() {
   const [users, setUsers] = useState<User[]>([]);

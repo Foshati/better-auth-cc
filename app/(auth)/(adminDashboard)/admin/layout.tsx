@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   description: "Admin Dashboard",
 };
 
-export default function adminDashboardLayout({
+export default function AdminDashboardLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;

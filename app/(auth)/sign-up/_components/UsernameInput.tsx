@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Control, Controller, useWatch } from "react-hook-form";
 import { z } from "zod";
-import { signUpSchema } from "@/lib/auth-schema";
-import { Input } from "@/components/ui/input";
+import { signUpSchema } from "@/app/(auth)/_lib/auth-schema";
+import { Input } from "@/app/(auth)/_components/input/auth-input";
 import {
   FormItem,
   FormLabel,

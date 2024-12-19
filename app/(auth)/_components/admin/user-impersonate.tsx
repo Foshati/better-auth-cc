@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
-import { authClient } from "@/lib/auth-client";
+import { authClient } from "@/app/(auth)/_lib/auth-client";
 interface ImpersonateUserProps {
 	userId: string;
 }

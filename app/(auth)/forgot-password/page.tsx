@@ -9,14 +9,14 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/app/(auth)/_components/input/auth-input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
-import { authClient } from "@/lib/auth-client";
-import { forgotPasswordSchema } from "@/lib/auth-schema";
-import SubmitButton from "@/components/submitButton";
+import { authClient } from "@/app/(auth)/_lib/auth-client";
+import { forgotPasswordSchema } from "@/app/(auth)/_lib/auth-schema";
+import SubmitButton from "@/app/(auth)/_components/button/submit-button";
 
 export default function ForgotPassword() {
   const { toast } = useToast();

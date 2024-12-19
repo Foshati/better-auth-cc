@@ -1,4 +1,4 @@
-import { Input } from "@/components/ui/input";
+import { Input } from "@/app/(auth)/_components/input/auth-input";
 import { Check, Eye, EyeOff, KeyRound, X } from "lucide-react";
 import { useMemo, useState, useRef } from "react";
 

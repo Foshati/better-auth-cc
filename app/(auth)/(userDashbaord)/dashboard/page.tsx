@@ -1,4 +1,4 @@
-import { currentUser } from "@/lib/helper/currentUser";
+import { currentUser } from "@/app/(auth)/_lib/helper/currentUser";
 
 export default async function DashboardPage() {
   const user = await currentUser();

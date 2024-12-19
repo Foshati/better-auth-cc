@@ -1,6 +1,6 @@
 "use client";
 
-import { Input } from "@/components/ui/input";
+import { Input } from "@/app/(auth)/_components/input/auth-input";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { UseControllerProps, FieldValues } from "react-hook-form";

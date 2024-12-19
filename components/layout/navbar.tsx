@@ -5,7 +5,7 @@ import {
   DropdownMenuContent,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/app/(auth)/_components/input/auth-input";
 import { Toggle } from "@/components/ui/toggle";
 import {
   Sheet,

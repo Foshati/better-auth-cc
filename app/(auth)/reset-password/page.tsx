@@ -15,10 +15,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useRouter } from "next/navigation";
-import { authClient } from "@/lib/auth-client";
-import { resetPasswordSchema } from "@/lib/auth-schema";
+import { authClient } from "@/app/(auth)/_lib/auth-client";
+import { resetPasswordSchema } from "@/app/(auth)/_lib/auth-schema";
 import { useToast } from "@/hooks/use-toast";
-import SubmitButton from "@/components/submitButton";
+import SubmitButton from "@/app/(auth)/_components/button/submit-button";
 import InputHide from "../_components/input/hide-input";
 
 function ResetPasswordContent() {

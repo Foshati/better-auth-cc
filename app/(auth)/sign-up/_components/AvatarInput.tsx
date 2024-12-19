@@ -11,7 +11,7 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import { signUpSchema } from "@/lib/auth-schema";
+import { signUpSchema } from "@/app/(auth)/_lib/auth-schema";
 import { z } from "zod";
 
 interface AvatarInputProps {

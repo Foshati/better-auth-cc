@@ -6,12 +6,12 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import SubmitButton from '@/components/submitButton';
+import SubmitButton from '@/app/(auth)/_components/button/submit-button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
-import { authClient } from '@/lib/auth-client';
-import { signUpSchema } from '@/lib/auth-schema';
+import { authClient } from '@/app/(auth)/_lib/auth-client';
+import { signUpSchema } from '@/app/(auth)/_lib/auth-schema';
 
 import SocialButtons from '../_components/button/socials-buttonts';
 import ConfirmPasswordInput from './_components/ConfirmPasswordInput';

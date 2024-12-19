@@ -1,4 +1,4 @@
-import { auth } from "@/lib/auth";
+import { auth } from "@/app/(auth)/_lib/auth";
 import { headers } from "next/headers";
 
 let cachedUser: {
