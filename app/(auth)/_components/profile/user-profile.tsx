@@ -10,7 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/app/(auth)/_components/ui/auth-avatar";
 import Link from "next/link";
 import SignoutButton from "../button/signout-button";
 import { currentUser } from "@/app/(auth)/_lib/helper/currentUser";

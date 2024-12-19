@@ -21,7 +21,7 @@ import {
   SearchIcon,
 } from "lucide-react";
 import { UserProfile } from "@/app/(auth)/_components/profile/user-profile";
-import { ModeToggle } from "../ModeToggle";
+import { ModeToggle } from "../darkMode/ModeToggle";
 
 export default function Navbar() {
   return (

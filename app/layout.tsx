@@ -3,7 +3,7 @@ import "./globals.css";
 
 import { Toaster } from "@/components/ui/toaster";
 import { Lexend } from "next/font/google";
-import { ThemeProvider } from "@/components/theme-provider";
+import { ThemeProvider } from "@/components/darkMode/theme-provider";
 
 const font = Lexend({
   subsets: ["latin"],

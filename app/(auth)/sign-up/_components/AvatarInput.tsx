@@ -4,7 +4,7 @@ import React, { useState, useRef } from "react";
 import { Control, Controller } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { ImageUp, X } from "lucide-react";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/app/(auth)/_components/ui/auth-avatar";
 import {
   FormControl,
   FormField,
