@@ -39,7 +39,9 @@ export default function UsernameInput({ control }: UsernameInputProps) {
     setUsernameStatus({ status: "checking", message: "" });
 
     try {
-      const response = await fetch(`/api/validate-username?username=${encodeURIComponent(username)}`);
+      const response = await fetch(
+        `/api/auth/validate-username?username=${encodeURIComponent(username)}`
+      );
       const data = await response.json();
 
       if (data.isUnique) {
@@ -65,7 +67,7 @@ export default function UsernameInput({ control }: UsernameInputProps) {
     setIsGenerating(true);
     try {
       const response = await fetch(
-        `/api/generate-usernames?baseName=${encodeURIComponent(baseName)}`
+        `/api/auth/generate-usernames?baseName=${encodeURIComponent(baseName)}`
       );
       const data = await response.json();
 
@@ -100,15 +102,21 @@ export default function UsernameInput({ control }: UsernameInputProps) {
                   {...field}
                   variant={!hasValue ? "default" : error ? "error" : "success"}
                   className={`pr-10 
-                    ${isFullyValid ? 'border-green-500' : ''}
-                    ${usernameStatus.status === "duplicate" ? 'border-red-500' : ''}
-                    ${usernameStatus.status === "checking" ? 'border-yellow-500' : ''}
+                    ${isFullyValid ? "border-green-500" : ""}
+                    ${
+                      usernameStatus.status === "duplicate"
+                        ? "border-red-500"
+                        : ""
+                    }
+                    ${
+                      usernameStatus.status === "checking"
+                        ? "border-yellow-500"
+                        : ""
+                    }
                   `}
                   onChange={(e) => {
                     const value = e.target.value;
-                    field.onChange(
-                      value.startsWith("@") ? value : `@${value}`
-                    );
+                    field.onChange(value.startsWith("@") ? value : `@${value}`);
                   }}
                 />
                 <button
@@ -132,9 +140,9 @@ export default function UsernameInput({ control }: UsernameInputProps) {
                   <X className="absolute right-2 text-red-500" size={20} />
                 )}
                 {usernameStatus.status === "checking" && (
-                  <LoaderCircle 
-                    className="absolute right-2 text-yellow-500 animate-spin" 
-                    size={20} 
+                  <LoaderCircle
+                    className="absolute right-2 text-yellow-500 animate-spin"
+                    size={20}
                   />
                 )}
               </div>

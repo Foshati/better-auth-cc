@@ -1,5 +1,5 @@
 // app/api/validate-email/route.ts
-import prisma from '@/lib/prisma';
+import db from '@/lib/db';
 import { NextRequest, NextResponse } from 'next/server';
 
 
@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
 
   try {
     // Check if email exists in the database
-    const existingUser = await prisma.user.findUnique({
+    const existingUser = await db.user.findUnique({
       where: { email: email.toLowerCase() },
       select: { id: true }
     });

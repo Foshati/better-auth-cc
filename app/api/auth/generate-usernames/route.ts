@@ -1,4 +1,4 @@
-import prisma from "@/lib/prisma";
+import db from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
       const isValid = usernameSchema.safeParse(potentialUsername).success;
 
       if (isValid) {
-        const existingUser = await prisma.user.findUnique({
+        const existingUser = await db.user.findUnique({
           where: { username: potentialUsername },
           select: { id: true },
         });

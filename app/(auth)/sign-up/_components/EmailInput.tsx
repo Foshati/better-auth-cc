@@ -35,7 +35,7 @@ export default function EmailInput({ control }: EmailInputProps) {
     setEmailStatus({ status: "checking", message: "" });
 
     try {
-      const response = await fetch(`/api/validate-email?email=${encodeURIComponent(email)}`);
+      const response = await fetch(`/api/auth/validate-email?email=${encodeURIComponent(email)}`);
       const data = await response.json();
 
       setEmailStatus({
