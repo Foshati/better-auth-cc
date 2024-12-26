@@ -7,6 +7,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserRole {
+  user
+  admin
+  moderator
+}
+
 model User {
   id            String    @id @default(uuid())
   email         String    @unique
@@ -15,32 +21,33 @@ model User {
   image         String?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
-  sessions      Session[]
-  accounts      Account[]
+  deletedAt     DateTime?
 
-  role       String?
+  sessions   Session[]
+  accounts   Account[]
+  role       UserRole  @default(user)
   banned     Boolean?
   banReason  String?
   banExpires DateTime?
   premium    Boolean?
-
-  username String?
+  username   String?
 
   @@unique([username])
+  @@index([email])
   @@map("user")
 }
 
 model Session {
-  id        String   @id @default(uuid())
+  id        String    @id @default(uuid())
   expiresAt DateTime
   ipAddress String?
   userAgent String?
   userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  token     String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String    @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
   impersonatedBy String?
 
@@ -63,6 +70,7 @@ model Account {
   scope                 String?
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
+  deletedAt             DateTime?
 
   @@map("account")
 }
