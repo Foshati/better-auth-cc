@@ -27,6 +27,9 @@ export default function UsernameInput({ control }: UsernameInputProps) {
   const [suggestedUsernames, setSuggestedUsernames] = useState<string[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
 
+  // Watch the username field value
+  const usernameValue = useWatch({ control, name: "username" });
+
   // Watch the name field value
   const name = useWatch({ control, name: "name" });
 
@@ -79,15 +82,16 @@ export default function UsernameInput({ control }: UsernameInputProps) {
     }
   };
 
+  // Validate username whenever usernameValue changes
+  useEffect(() => {
+    validateUsername(usernameValue);
+  }, [usernameValue]);
+
   return (
     <Controller
       control={control}
       name="username"
       render={({ field }) => {
-        useEffect(() => {
-          validateUsername(field.value);
-        }, [field.value]);
-
         const hasValue = field.value && field.value.trim() !== "";
         const error = control._formState.errors.username;
         const isFullyValid = usernameStatus.status === "unique" && !error;

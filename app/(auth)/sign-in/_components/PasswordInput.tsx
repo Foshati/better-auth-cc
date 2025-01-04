@@ -1,5 +1,6 @@
 "use client";
 
+import { Control } from "react-hook-form";
 import {
   FormField,
   FormItem,
@@ -7,11 +8,12 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
-
 import Link from "next/link";
 import InputHide from "../../_components/input/hide-input";
+import { z } from "zod";
+import { signInSchema } from "@/app/(auth)/_lib/auth-schema";
 
-export function PasswordInput({ control }: { control: any }) {
+export function PasswordInput({ control }: { control: Control<z.infer<typeof signInSchema>> }) {
   return (
     <FormField
       control={control}
@@ -19,7 +21,6 @@ export function PasswordInput({ control }: { control: any }) {
       render={({ field }) => {
         const hasValue = field.value && field.value.trim() !== "";
         const error = control._formState.errors.password;
-
         const variant = !hasValue ? "default" : error ? "error" : "success";
 
         return (

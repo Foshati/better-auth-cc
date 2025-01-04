@@ -2,7 +2,6 @@ import { Input } from "@/app/(auth)/_components/input/auth-input";
 import { Check, Eye, EyeOff, KeyRound, X } from "lucide-react";
 import { useMemo, useState, useRef } from "react";
 
-
 type InputSchemaProps = {
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -10,7 +9,6 @@ type InputSchemaProps = {
   name: string;
   ref: React.Ref<HTMLInputElement>;
   variant?: "default" | "error" | "success"; // اضافه کردن این prop
-
 };
 
 export default function InputSchema({
@@ -20,7 +18,6 @@ export default function InputSchema({
   name,
   ref,
   variant = "default", // پیش‌فرض default
-
 }: InputSchemaProps) {
   const [password, setPassword] = useState(value);
   const [isVisible, setIsVisible] = useState<boolean>(false);
@@ -108,7 +105,7 @@ export default function InputSchema({
       <div className="space-y-2">
         <div className="relative">
           <Input
-          variant={variant}
+            variant={variant}
             id="input-51"
             className="pe-9"
             placeholder="Password"
@@ -126,7 +123,7 @@ export default function InputSchema({
             name={name} // Bind the name attribute for react-hook-form
             ref={(r) => {
               if (ref) {
-                // @ts-ignore
+                // @ts-expect-error - ref is a forwarded ref and TypeScript doesn't recognize it correctly
                 ref.current = r;
               }
               inputRef.current = r;

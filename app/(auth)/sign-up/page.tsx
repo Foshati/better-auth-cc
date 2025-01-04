@@ -59,7 +59,7 @@ export default function SignUp() {
         },
         onError: (ctx) => {
           let errorField = "";
-          let errorMessage = ctx.error.message ?? "Something went wrong.";
+          const errorMessage = ctx.error.message ?? "Something went wrong."; // استفاده از const به جای let
 
           switch (ctx.error.code) {
             case "USERNAME_TAKEN":
@@ -115,13 +115,14 @@ export default function SignUp() {
           });
         },
       });
-    } catch (error: any) {
+    } catch (error: unknown) { // استفاده از unknown به جای any
       console.error("Signup failed", error);
+
+      const errorMessage = error instanceof Error ? error.message : "Unable to create account. Please try again.";
 
       toast({
         title: "Signup Failed",
-        description:
-          error.message ?? "Unable to create account. Please try again.",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
