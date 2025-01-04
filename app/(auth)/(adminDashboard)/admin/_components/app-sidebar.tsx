@@ -1,4 +1,4 @@
-import { Calendar, ChartNoAxesGantt, Home, Inbox, InfoIcon, Search, Settings } from "lucide-react"
+import { Calendar, ChartNoAxesGantt, InfoIcon, Search, Settings } from "lucide-react"
 
 import {
   Sidebar,

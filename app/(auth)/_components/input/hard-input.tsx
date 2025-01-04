@@ -8,7 +8,7 @@ type InputSchemaProps = {
   onBlur: () => void;
   name: string;
   ref: React.Ref<HTMLInputElement>;
-  variant?: "default" | "error" | "success"; // اضافه کردن این prop
+  variant?: "default" | "error" | "success";
 };
 
 export default function InputSchema({

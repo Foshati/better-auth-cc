@@ -6,7 +6,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/app/(auth)/_components/input/auth-input";
-import { Toggle } from "@/components/ui/toggle";
 import {
   Sheet,
   SheetTrigger,
@@ -15,11 +14,7 @@ import {
   SheetTitle,
   SheetDescription,
 } from "@/components/ui/sheet";
-import {
-  InfoIcon,
-  MenuIcon,
-  SearchIcon,
-} from "lucide-react";
+import { InfoIcon, MenuIcon, SearchIcon } from "lucide-react";
 import { UserProfile } from "@/app/(auth)/_components/profile/user-profile";
 import { ModeToggle } from "../darkMode/ModeToggle";
 
@@ -61,7 +56,6 @@ export default function Navbar() {
           </Link>
         </nav>
         <div className="flex items-center gap-4">
-      
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="rounded-full">
@@ -80,8 +74,8 @@ export default function Navbar() {
               </div>
             </DropdownMenuContent>
           </DropdownMenu>
-          <div >
-<ModeToggle/>
+          <div>
+            <ModeToggle />
           </div>
 
           <div className="lg:hidden">
@@ -131,11 +125,9 @@ export default function Navbar() {
                 </SheetHeader>
               </SheetContent>
             </Sheet>
-
           </div>
-          
-          <UserProfile />
 
+          <UserProfile />
         </div>
       </div>
     </header>

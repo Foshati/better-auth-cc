@@ -1,7 +1,7 @@
 import { UserProfile } from "@/app/(auth)/_components/profile/user-profile";
 import { Button } from "@/components/ui";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { Bell, Home } from "lucide-react";
+import { Bell } from "lucide-react";
 import Link from "next/link";
 
 export default function NavbarDashboard() {
