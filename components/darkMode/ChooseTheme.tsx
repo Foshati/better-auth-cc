@@ -4,9 +4,9 @@ import * as React from "react";
 import { useTheme } from "next-themes";
 import { Check, Minus } from "lucide-react";
 import Image from "next/image";
-import UiDark from "../app/(auth)/_lib/assets/img/UiDark.png";
-import UiLight from "../app/(auth)/_lib/assets/img/UiLight.png";
-import UiSystem from "../app/(auth)/_lib/assets/img/UiSystem.png";
+import UiDark from "./img/UiDark.png";
+import UiLight from "./img/UiLight.png";
+import UiSystem from "./img/UiSystem.png";
 
 const themes = [
   { id: "light", label: "Light", image: UiLight },
