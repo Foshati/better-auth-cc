@@ -6,11 +6,27 @@ import { admin } from "better-auth/plugins";
 import { username } from "better-auth/plugins";
 import db from "@/lib/db";
 
+const authBaseUrl = process.env.BETTER_AUTH_URL || "http://localhost:3000";
+
+
 export const auth = betterAuth({
   database: prismaAdapter(db, {
     provider: "postgresql",
   }),
-  
+
+  baseURL: authBaseUrl,
+
+  trustedOrigins: [
+    authBaseUrl,
+    `${authBaseUrl}/api/auth`,
+    `${authBaseUrl}/sign-in`,
+    `${authBaseUrl}/sign-up`,
+    `${authBaseUrl}/forgot-password`,
+    `${authBaseUrl}/reset-password`,
+    "http://localhost:3000",
+    "https://0.0.0.0:3000"
+  ],
+
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
@@ -31,14 +47,14 @@ export const auth = betterAuth({
       }
     },
   },
-  
+
   emailVerification: {
     sendOnSignUp: true,
     autoSignInAfterVerification: true,
     sendVerificationEmail: async ({ user, token }) => {
       try {
         const verificationUrl = `${process.env.BETTER_AUTH_URL}/api/auth/verify-email?token=${token}&callbackURL=${process.env.EMAIL_VERIFICATION_CALLBACK_URL}`;
-        
+
         await sendEmail({
           to: user.email,
           subject: "Verify your email address",
@@ -55,7 +71,7 @@ export const auth = betterAuth({
       }
     },
   },
-  
+
   session: {
     expiresIn: 60 * 60 * 24 * 7, // 7 days
     updateAge: 60 * 60 * 24, // 1 day (every 1 day the session expiration is updated)
@@ -64,7 +80,7 @@ export const auth = betterAuth({
       maxAge: 5 * 60, // Cache duration in seconds
     },
   },
-  
+
   user: {
     additionalFields: {
       premium: {
@@ -92,7 +108,7 @@ export const auth = betterAuth({
       },
     },
   },
-  
+
   socialProviders: {
     github: {
       clientId: process.env.GITHUB_CLIENT_ID as string,
@@ -103,7 +119,7 @@ export const auth = betterAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     },
   },
-  
+
   plugins: [
     username(),
     openAPI(),

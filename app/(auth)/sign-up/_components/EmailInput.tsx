@@ -50,7 +50,6 @@ export default function EmailInput({ control }: EmailInputProps) {
     }
   }, []);
 
-  // استفاده از useWatch برای رصد تغییرات در فیلد email
   const emailValue = useWatch({
     control,
     name: "email",
