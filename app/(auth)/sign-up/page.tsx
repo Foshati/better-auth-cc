@@ -59,7 +59,7 @@ export default function SignUp() {
         },
         onError: (ctx) => {
           let errorField = "";
-          const errorMessage = ctx.error.message ?? "Something went wrong."; // استفاده از const به جای let
+          const errorMessage = ctx.error.message ?? "Something went wrong.";
 
           switch (ctx.error.code) {
             case "USERNAME_TAKEN":
