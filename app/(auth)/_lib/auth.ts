@@ -103,6 +103,16 @@ export const auth = betterAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     },
   },
+
+  trustedOrigins: [
+    "https://foshati22.liara.run/api/auth",
+    "https://foshati22.liara.run/sign-in",
+    "https://foshati22.liara.run/sign-up",
+    "https://foshati22.liara.run/forgot-password",
+    "https://foshati22.liara.run",
+    "https://0.0.0.0:3000",
+    "http://localhost:3000",
+  ],
   
   plugins: [
     username(),
