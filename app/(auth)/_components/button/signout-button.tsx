@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { authClient } from "@/app/(auth)/_lib/auth-client";
+import { client } from "@/app/(auth)/_lib/auth-client";
 import { LogOut } from "lucide-react";
 import SubmitButton from "@/app/(auth)/_components/button/submit-button";
 
@@ -13,7 +13,7 @@ export default function SignoutButton() {
   const handleSignOut = async () => {
     try {
       setPending(true);
-      await authClient.signOut({
+      await client.signOut({
         fetchOptions: {
           onSuccess: () => {
             router.push("/sign-in");

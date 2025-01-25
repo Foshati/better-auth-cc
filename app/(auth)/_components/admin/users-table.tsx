@@ -11,7 +11,7 @@ import {
 import { User } from "@prisma/client";
 import { useState, useEffect } from "react";
 import ImpersonateUser from "./user-impersonate";
-import { authClient } from "@/app/(auth)/_lib/auth-client";
+import { client } from "@/app/(auth)/_lib/auth-client";
 
 export default function UsersTable() {
   const [users, setUsers] = useState<User[]>([]);
@@ -23,7 +23,7 @@ export default function UsersTable() {
       try {
         setIsLoading(true);
 
-        const response = await authClient.admin.listUsers({
+        const response = await client.admin.listUsers({
           query: { limit: 10 },
         });
         if (response?.data) {

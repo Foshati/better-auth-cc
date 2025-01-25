@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
-import { authClient } from "@/app/(auth)/_lib/auth-client";
+import { client } from "@/app/(auth)/_lib/auth-client";
 interface ImpersonateUserProps {
 	userId: string;
 }
@@ -14,7 +14,7 @@ export default function ImpersonateUser({ userId }: ImpersonateUserProps) {
 
 	const handleImpersonateUser = async () => {
 		try {
-			await authClient.admin.impersonateUser({
+			await client.admin.impersonateUser({
 				userId: userId,
 			});
 			router.push("/");

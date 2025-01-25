@@ -15,7 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useRouter } from "next/navigation";
-import { authClient } from "@/app/(auth)/_lib/auth-client";
+import { client } from "@/app/(auth)/_lib/auth-client";
 import { resetPasswordSchema } from "@/app/(auth)/_lib/auth-schema";
 import { useToast } from "@/hooks/use-toast";
 import SubmitButton from "@/app/(auth)/_components/button/submit-button";
@@ -39,7 +39,7 @@ function ResetPasswordContent() {
 
   const onSubmit = async (data: z.infer<typeof resetPasswordSchema>) => {
     setIsPending(true);
-    const { error } = await authClient.resetPassword({
+    const { error } = await client.resetPassword({
       newPassword: data.password,
     });
     if (error) {

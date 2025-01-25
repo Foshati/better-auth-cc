@@ -14,7 +14,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
-import { authClient } from "@/app/(auth)/_lib/auth-client";
+import { client } from "@/app/(auth)/_lib/auth-client";
 import { forgotPasswordSchema } from "@/app/(auth)/_lib/auth-schema";
 import SubmitButton from "@/app/(auth)/_components/button/submit-button";
 
@@ -32,7 +32,7 @@ export default function ForgotPassword() {
 
   const onSubmit = async (data: z.infer<typeof forgotPasswordSchema>) => {
     setIsPending(true);
-    const { error } = await authClient.forgetPassword({
+    const { error } = await client.forgetPassword({
       email: data.email,
       redirectTo: "/reset-password",
     });

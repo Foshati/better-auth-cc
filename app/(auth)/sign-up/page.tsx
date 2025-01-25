@@ -10,7 +10,7 @@ import SubmitButton from '@/app/(auth)/_components/button/submit-button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
-import { authClient } from '@/app/(auth)/_lib/auth-client';
+import { client } from '@/app/(auth)/_lib/auth-client';
 import { signUpSchema } from '@/app/(auth)/_lib/auth-schema';
 
 import SocialButtons from '../_components/button/socials-buttonts';
@@ -46,7 +46,7 @@ export default function SignUp() {
         username: values.username,
       };
 
-      await authClient.signUp.email(signupData, {
+      await client.signUp.email(signupData, {
         onRequest: () => {
           setPending(true);
         },

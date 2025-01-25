@@ -17,13 +17,13 @@ import {
 } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
-import { authClient } from "@/app/(auth)/_lib/auth-client";
 
 import { ErrorContext } from "@better-fetch/fetch";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { EmailInput, PasswordInput } from "./_components";
 import { signInSchema } from "@/app/(auth)/_lib/auth-schema";
+import { client } from "../_lib/auth-client";
 
 export default function SignIn() {
   const router = useRouter();
@@ -42,7 +42,7 @@ export default function SignIn() {
   const handleCredentialsSignIn = async (
     values: z.infer<typeof signInSchema>
   ) => {
-    await authClient.signIn.email(
+    await client.signIn.email(
       {
         email: values.email,
         password: values.password,
