@@ -1,15 +1,17 @@
-import { currentUser } from "@/app/(auth)/_lib/helper/currentUser";
+import { getServerSession } from "../../_lib/helper/auth-utility";
 
 export default async function DashboardPage() {
-  const user = await currentUser();
+  const session = await getServerSession();
   return (
     <div className="mt-10 text-center">
-      <h1 className="text-2xl font-bold underline">Welcome to the admin dashboard</h1>
+      <h1 className="text-2xl font-bold underline">
+        Welcome to the admin dashboard
+      </h1>
       <ul>
-        <li>Name: {user?.name}</li>
-        <li>username: {user?.username}</li>
-        <li>Email: {user?.email}</li>
-        <li>role: {user?.role}</li>
+        <li>Name: {session?.user.name}</li>
+        <li>username: {session?.user.username}</li>
+        <li>Email: {session?.user.email}</li>
+        <li>role: {session?.user.role}</li>
       </ul>
     </div>
   );
